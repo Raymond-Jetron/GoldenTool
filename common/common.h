@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <dirent.h>
 #endif
 
 #include <stdlib.h>
@@ -346,21 +347,20 @@ std::string cast_time_ms_str(const time_t timeval, short ms)
 	return szTime;
 }
 //由时间值转换为字符串（字符串格式：%4d%2d%2d%2d%2d%2d)
-std::string cast_time_str_simple(__time64_t timeval)
+std::string cast_time_str_simple(const time_t timeval)
 {
-	struct tm tm1;
-	localtime_s(&tm1, &timeval);
-	tm1.tm_year += 1900;
-	tm1.tm_mon++;
+	tm* local = localtime(&timeval);
+	local->tm_year += 1900;
+	local->tm_mon++;
 
 	char szTime[32] = { 0 };
-	sprintf_s(szTime, "%4.4d%2.2d%2.2d%2.2d%2.2d%2.2d",
-		tm1.tm_year,
-		tm1.tm_mon,
-		tm1.tm_mday,
-		tm1.tm_hour,
-		tm1.tm_min,
-		tm1.tm_sec);
+	sprintf(szTime, "%4.4d%2.2d%2.2d%2.2d%2.2d%2.2d",
+		local->tm_year,
+		local->tm_mon,
+		local->tm_mday,
+		local->tm_hour,
+		local->tm_min,
+		local->tm_sec);
 	return szTime;
 }
 

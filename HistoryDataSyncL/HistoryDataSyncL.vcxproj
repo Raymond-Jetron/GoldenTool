@@ -47,45 +47,92 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
+    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <IncludePath>$(ProjectDir)api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)api\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
+    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h</AdditionalSourcesToCopyMapping>
+    <LocalRemoteCopySources>true</LocalRemoteCopySources>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <IncludePath>$(ProjectDir)api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)api\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
+    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h</AdditionalSourcesToCopyMapping>
+    <LocalRemoteCopySources>true</LocalRemoteCopySources>
+  </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="GoldenTable.cpp" />
     <ClCompile Include="golden_config.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GoldenTable.h" />
     <ClInclude Include="golden_config.h" />
-    <ClInclude Include="golden_def.h" />
-    <ClInclude Include="golden_verify.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(RemoteProjectDir)/api/$(Platform)/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LINUX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(RemoteOutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>goldenapi;pthread;%(LibraryDependencies)</LibraryDependencies>
+      <AdditionalOptions>-Wl,-rpath=$(RemoteOutDir) %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\libgoldenapi.so.3.0.28:=$(RemoteOutDir)libgoldenapi.so.3.0.28;$(ProjectDir)api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(ProjectDir)api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(ProjectDir)api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(ProjectDir)api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1</AdditionalSourcesToCopyMapping>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(RemoteProjectDir)/api/$(Platform)/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LINUX;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(RemoteOutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>goldenapi;pthread;%(LibraryDependencies)</LibraryDependencies>
+      <AdditionalOptions>-Wl,-rpath=$(RemoteOutDir) %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PreBuildEvent>
+      <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\libgoldenapi.so.3.0.28:=$(RemoteOutDir)libgoldenapi.so.3.0.28;$(ProjectDir)api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(ProjectDir)api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(ProjectDir)api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(ProjectDir)api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1</AdditionalSourcesToCopyMapping>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

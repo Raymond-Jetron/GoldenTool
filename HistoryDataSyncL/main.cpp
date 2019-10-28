@@ -21,7 +21,6 @@
 #include "common.h"
 #include "scope_guard.h"
 #include "thread_pool.h"
-#include "GoldenTable.h"
 
 #ifdef _WIN32
 #include <tchar.h>
@@ -84,8 +83,9 @@ void get_points_from_file(const std::string &point_file_path, vector<golden_int3
 		g_logger->error(_T("point prop file must include field id and table_dot_tag."));
 		return;
 	}
-	// 获取ID和名字，规定单表上限为1万点
-	int sep, sep_p, sep_n, id_count = 0;
+	// 获取ID和名字
+	size_t sep = 0, sep_p = 0, sep_n = 0;
+	int id_count = 0;
 	while (getline(ifs, line) && id_count++ < source_point_count)
 	{
 		sep = line.find_first_of(',');
@@ -94,7 +94,7 @@ void get_points_from_file(const std::string &point_file_path, vector<golden_int3
 		if (source_id_to_value_type.find(id) != source_id_to_value_type.end())
 			types.push_back(source_id_to_value_type.at(id));
 		else
-			g_logger->error(_T("标签点属性文件数据库不匹配，请检查后重新操作，id={}, line={}"), id, line);
+			g_logger->error(_T("The information in the file dose not match the information in the database, id={}, line={}"), id, line);
 		sep_p = line.find_first_of('[', sep + 1);
 		sep_n = line.find_first_of(']', sep + 1);
 		fullnames.push_back(line.substr(sep_p + 1, sep_n - sep_p - 1));
@@ -105,9 +105,9 @@ void get_points_from_file(const std::string &point_file_path, vector<golden_int3
 void hisdata_to_rtdb_thread(const std::string &point_file_path)
 {
 	// 提取文件名
-	int position = point_file_path.find_last_of('\\') + 1;
+	int position = point_file_path.find_last_of(PATH_SEP) + 1;
 	std::string data_file_name = point_file_path.substr(position, point_file_path.find_last_of('.') - position);
-	g_logger->info(_T("开始处理[{}]，解析中..."), data_file_name );
+	g_logger->info(_T("Open [{}], parsing..."), data_file_name );
 	golden_error ecode = GoE_OK;
 
 	// 获取要处理点的ID、类型、名称
@@ -123,7 +123,7 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 	golden_int32 nEndTime = golden_config::end_time_int_;
 	std::string strStartTime = cast_time_str_simple(nStartTime);
 	std::string strEndTime = cast_time_str_simple(nEndTime);
-	g_logger->info(_T("同步的时间范围:[{}]到[{}]"), golden_config::start_time_, golden_config::end_time_);
+	g_logger->info(_T("Sync time range : from [{}] to [{}]"), golden_config::start_time_, golden_config::end_time_);
 
 	// 并发线程数
 	golden_int32 threadcount = golden_config::thread_count_;
@@ -141,7 +141,7 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 		int source_id = ids.at(pos);
 		const char* point_name = fullnames.at(pos).c_str();
 		if (source_id_to_sink_id.find(source_id) == source_id_to_sink_id.end()) {
-			g_logger->info(_T("标签点[{},{}]在[{}]没有对应的标签点，跳过该点"), source_id, point_name, golden_config::sink_host_name_);
+			g_logger->info(_T("Point [{},{}] is not in [{}], skip it."), source_id, point_name, golden_config::sink_host_name_);
 			return GoE_FALSE;
 		}
 		int sink_id = source_id_to_sink_id.find(source_id)->second;
@@ -168,21 +168,21 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 		golden_int32 source_values_count = 0;
 		ecode = goh_archived_values_count(source_db_handle, source_id, nStartTime, 0, nEndTime, 0, &source_values_count);
 		if (source_values_count == 0) {
-			g_logger->info(_T("标签点[{},{}]没有历史数据，同步完成"), source_id, point_name);
+			g_logger->info(_T("Point [{},{}] history data is empty, sync completed."), source_id, point_name);
 			return GoE_OK;
 		}
-		g_logger->info(_T("标签点[{},{}][{}-{}]预计有[{}]条历史数据，准备查询..."), source_id, point_name, strStartTime, strEndTime, source_values_count);
+		g_logger->info(_T("Point [{},{}][{}-{}] may has [{}] history records, prepare to query..."), source_id, point_name, strStartTime, strEndTime, source_values_count);
 		CHECK_ECODE(ecode, _T("source:goh_archived_values_count"), g_logger);
 		// 获取sink点的数据个数
 		golden_int32 sink_values_count = 0;
 		ecode = goh_archived_values_count(sink_db_handle, sink_id, nStartTime, 0, nEndTime, 0, &sink_values_count);
 		CHECK_ECODE(ecode, _T("sink:goh_archived_values_count"), g_logger);
 		if (source_values_count == sink_values_count) {
-			g_logger->info(_T("标签点[{},{}][{}-{}]在{}库和{}库中历史值数量一致为{}，同步完成"), source_id, point_name, strStartTime, strEndTime, golden_config::source_host_name_, golden_config::sink_host_name_, sink_values_count);
+			g_logger->info(_T("Point [{},{}][{}-{}] has the same count in {} and {}, that is {}, sync completed."), source_id, point_name, strStartTime, strEndTime, golden_config::source_host_name_, golden_config::sink_host_name_, sink_values_count);
 			return GoE_OK;
 		}
 		else
-			g_logger->trace(_T("标签点[{},{}][{}-{}]在{}库中有{}条，在{}库中有{}条，需要同步"), source_id, point_name, strStartTime, strEndTime, golden_config::source_host_name_, source_values_count, golden_config::sink_host_name_, sink_values_count);
+			g_logger->trace(_T("Point [{},{}][{}-{}] has {} in {}，has {} in {}, needs sync."), source_id, point_name, strStartTime, strEndTime, source_values_count, golden_config::source_host_name_, sink_values_count, golden_config::sink_host_name_);
 		
 		// 申请内存
 		int batch_count = GOLDEN_MIN(source_values_count, BATCH_COUNT);
@@ -244,7 +244,7 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 		
 		return ecode;
 	};
-	g_logger->info(_T("正在同步[{}]的历史数据，请稍等片刻"), data_file_name);
+	g_logger->info(_T("Synchronizing [{}] history data, please wait a moment."), data_file_name);
 	int completed_count = 0;
 	int show_process = (int)ceil((double)nPointCount / 100);
 	if (show_process == 0) show_process = 1;
@@ -260,19 +260,19 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 		golden_error ret = result.get();
 		if (completed_count++ % show_process == 0)
 		{
-			g_logger->info(_T("已完成进度：{}%"), completed_count * 100 / nPointCount);
+			g_logger->info(_T("Completed progress is : {}%"), completed_count * 100 / nPointCount);
 		}
 	}
 	watch.stop();
-	g_logger->info(_T("已完成进度：100%"));
+	g_logger->info(_T("Completed progress is : 100%"));
 	g_thread_pool.close();
-	g_logger->info(_T("查询[{}]历史总数为：{}, 时间跨度：{}s, 总查询耗时：{}ms"), data_file_name, total_values_count, nEndTime - nStartTime + 1, watch.elapsed_ms());
+	g_logger->info(_T("Query [{}] history data records count : {}, time span : {}s, total time elapsed : {}ms"), data_file_name, total_values_count, nEndTime - nStartTime + 1, watch.elapsed_ms());
 	
 	// 重命名已完成点表
-	std::string old_file_path = golden_config::points_dir_ + "\\" + data_file_name + ".csv";
-	std::string new_file_path = golden_config::points_dir_ + "\\[OK]" + data_file_name + ".csv";
+	std::string old_file_path = golden_config::points_dir_ + PATH_SEP + data_file_name + ".csv";
+	std::string new_file_path = golden_config::points_dir_ + PATH_SEP + "[OK]" + data_file_name + ".csv";
 	ecode = rename(old_file_path.c_str(), new_file_path.c_str());
-	if (ecode != GoE_OK) g_logger->error(_T("将{}重命名为{}失败"), old_file_path, new_file_path);
+	if (ecode != GoE_OK) g_logger->error(_T("Rename {} to {} failed."), old_file_path, new_file_path);
 }
 
 golden_error get_points_id(golden_int32 handle, const char *table_name, golden_int32 *ids, golden_int32 *count)
@@ -296,6 +296,7 @@ size_t get_points_files(std::string points_dir)
 {
 	if (points_dir.length())
 	{
+#ifdef _WIN32
 		WIN32_FIND_DATA fd;
 		points_dir += (points_dir.rfind('\\') == 0) ? "" : "\\";
 		std::string find_points_filter = points_dir + _T("*.csv");
@@ -312,6 +313,23 @@ size_t get_points_files(std::string points_dir)
 		} while (FindNextFile(hFind, &fd));
 		FindClose(hFind);
 		return points_files.size();
+#else
+		DIR* dir = opendir(points_dir.c_str());      //打开指定目录  
+		dirent* p = NULL;                            //定义遍历指针  
+		while ((p = readdir(dir)) != NULL)           //开始逐个遍历  
+		{
+			//这里需要注意，linux平台下一个目录中有"."和".."隐藏文件，需要过滤掉  
+			if (p->d_name[0] != '.')//d_name是一个char数组，存放当前遍历到的文件名  
+			{
+				if (strstr(p->d_name, ".csv") != NULL) {
+					std::string name = points_dir + PATH_SEP + string(p->d_name);
+					points_files.push_back(name);
+				}
+			}
+		}
+		closedir(dir);//关闭指定目录
+		return points_files.size();
+#endif // _WIN32
 	}
 	return 0;
 }
@@ -617,7 +635,7 @@ bool prepare_metadata()
 		ecode = gob_find_points(sink_db_handle, &find_points_count, points_name.data(), temp_ids.data(), nullptr, nullptr, nullptr);
 		for (int i = 0; i < points_count; ++i) {
 			if (temp_ids[i] == 0)
-				g_logger->error(_T("没有在{}中找到{}"), golden_config::sink_host_name_, points_name[i]);
+				g_logger->error(_T("Not find {} in {}"), points_name[i], golden_config::sink_host_name_);
 			else
 				source_id_to_sink_id.insert(make_pair(source_points_prop[i].id, temp_ids[i]));
 		}
@@ -654,7 +672,7 @@ bool prepare_metadata()
 bool sync_data() {
 	size_t points_file_count = get_points_files(golden_config::points_dir_);
 	if (points_file_count > 0) {
-		g_logger->info(_T("共有 {} 项任务需要处理"), points_file_count);
+		g_logger->info(_T("There are {} tasks to deal with."), points_file_count);
 		std::thread thd;
 		stop_watch watch;
 		watch.start();
@@ -665,19 +683,26 @@ bool sync_data() {
 				thd.join();
 			}
 			else {
-				g_logger->info(_T("上次已经完成同步[{}]中的数据"), points_files.at(i));
+				g_logger->info(_T("[{}] history data synchronized."), points_files.at(i));
 			}
-			g_progress->critical(_T("已完第 {} 项同步任务，总进度：{}%"), i + 1, (i + 1) * 100 / points_file_count);
+			g_progress->critical(_T("Task {} completed, progress is : {}%"), i + 1, (i + 1) * 100 / points_file_count);
 		}
 		watch.stop();
-		g_progress->critical(_T("共同步 {} 组历史数据，总耗时：{}s"), points_file_count, watch.elapsed_second());
+		g_progress->critical(_T("There are {} files synchronized, total elapsed is {}s"), points_file_count, watch.elapsed_second());
 	}
 	return true;
 }
 
 int main(int argc, char* argv[])
 {
-	std::cout << _T("@@@ 欢迎使用数据库历史数据同步工具 @@@") << std::endl;
+	std::cout << ",-_/,.       .                 .-,--.      .        .---.             " << endl;
+	std::cout << "' |_|/ . ,-. |- ,-. ,-. . .    ' |   \\ ,-. |- ,-.   \\___  . . ,-. ,-. " << endl;
+	std::cout << " /| |  | `-. |  | | |   | |    , |   / ,-| |  ,-|       \\ | | | | |   " << endl;
+	std::cout << " `' `' ' `-' `' `-' '   `-|    `-^--'  `-^ `' `-^   `---' `-| ' ' `-' " << endl;
+	std::cout << "                         /|                                /|         " << endl;
+	std::cout << "                        `-'                               `-'         " << endl << endl;
+	// http://patorjk.com/software/taag/#p=display&f=Stampatello&t=History%20Data%20Sync
+
 	
 	CLI::App app{ "App description" };
 	{
@@ -705,9 +730,9 @@ int main(int argc, char* argv[])
 		app.add_option("-e,--end_time", golden_config::end_time_, "end time (=forever)\nformat:\n \"YYYY-MM-DD hh:mm:ss.ms\"\n \"forever\" end time is max UTC time");
 		golden_config::thread_count_ = 1;
 		app.add_option("--thread_count", golden_config::thread_count_, "thread count (=1)");
-		app.add_option("--points_dir", golden_config::points_dir_, "标签点表所在文件夹目录")->required();
+		app.add_option("--points_dir", golden_config::points_dir_, "point file directory (*.csv)")->required();
 		golden_config::output_points_prop_ = false;
-		app.add_flag("--output_points_prop", golden_config::output_points_prop_, "是否导出源数据库所有标签点，默认：false");
+		app.add_flag("--output_points_prop", golden_config::output_points_prop_, "out put all points' property");
 		golden_config::print_log_ = true;
 		app.add_flag("--print_log", golden_config::print_log_, "print log to console");
 		golden_config::log_level_ = spdlog::level::level_enum::info;
