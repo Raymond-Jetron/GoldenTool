@@ -35,31 +35,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5da31435-0a5f-4fce-9d8a-c107ef2f5a61}</ProjectGuid>
+    <ProjectGuid>{b88de499-f153-4123-a612-21806f8cf824}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>HistoryDataSyncL</RootNamespace>
+    <RootNamespace>GoldenQueryDataL</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
-    <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -71,11 +67,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/$(SolutionName)</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -83,21 +77,19 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
     <IncludePath>$(ProjectDir)api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)api\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h;$(ProjectDir)api\$(Platform)\golden.h:=$(RemoteProjectDir)/api/$(Platform)/golden.h;$(ProjectDir)api\$(Platform)\golden_error.h:=$(RemoteProjectDir)/api/$(Platform)/golden_error.h;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
     <SourcePath>$(SourcePath)</SourcePath>
-    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h</AdditionalSourcesToCopyMapping>
-    <LocalRemoteCopySources>true</LocalRemoteCopySources>
+    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
     <IncludePath>$(ProjectDir)api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)api\$(Platform)\;$(LibraryPath)</LibraryPath>
+    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h;$(ProjectDir)api\$(Platform)\golden.h:=$(RemoteProjectDir)/api/$(Platform)/golden.h;$(ProjectDir)api\$(Platform)\golden_error.h:=$(RemoteProjectDir)/api/$(Platform)/golden_error.h;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
     <SourcePath>$(SourcePath)</SourcePath>
-    <AdditionalSourcesToCopyMapping>$(ProjectDir)api\$(Platform)\goldenapi.h:=$(RemoteProjectDir)/api/$(Platform)/goldenapi.h</AdditionalSourcesToCopyMapping>
-    <LocalRemoteCopySources>true</LocalRemoteCopySources>
+    <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemGroup>

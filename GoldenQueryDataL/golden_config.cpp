@@ -1,0 +1,26 @@
+#include "golden_config.h"
+// 外部传入
+std::string golden_config::task_name_;
+std::vector<std::string> golden_config::host_name_;
+int golden_config::port_;
+std::string golden_config::user_;
+std::string golden_config::password_;
+std::string golden_config::start_time_;
+std::string golden_config::end_time_;
+std::string golden_config::search_condition_;
+int golden_config::first_point_;
+int golden_config::point_count_;
+int golden_config::point_interval_;
+std::string golden_config::query_mode_;
+int golden_config::query_batch_count_;
+int golden_config::interval_;
+int golden_config::thread_count_;
+bool golden_config::print_log_;
+int golden_config::log_level_;
+std::string golden_config::result_file_;
+
+// 内部转换
+int golden_config::start_time_int_;
+short golden_config::start_time_ms_;
+int golden_config::end_time_int_;
+short golden_config::end_time_ms_;
