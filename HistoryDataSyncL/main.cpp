@@ -786,3 +786,4 @@ int main(int argc, char* argv[])
 	g_logger->info("Exit the app.");
 	return 0;
 }
+
