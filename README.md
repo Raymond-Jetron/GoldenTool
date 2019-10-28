@@ -1,6 +1,7 @@
 #简介
 GoldenTool为庚顿跨平台工具包，具体工具包含：
-1、HistoryDataSync历史数据同步
+
+1. HistoryDataSync历史数据同步，适用于庚云/庚顿/庚金V3.0系列之间的同步，没有点数限制，没有授权限制，用于内部使用，不能免费给用户用。
 
 #入门
 1.	HistoryDataSync
