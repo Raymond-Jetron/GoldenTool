@@ -1,21 +1,19 @@
 #简介
-庚顿跨平台性能测试工具。
-GoldenMakeData，数据生成工具。
 GoldenQueryData，数据查询工具。
 带L的为linux版，带W的为windows版。
 
 #入门
 ```
-./GoldenMakeDataL.out -h
-,---.      .    .           ,-,-,-.       .         .-,--.      .      
-|  -'  ,-. |  ,-| ,-. ,-.   `,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-. 
-|  ,-' | | |  | | |-' | |     | ; | . ,-| |<  |-'   , |   / ,-| |  ,-| 
-`---|  `-' `' `-^ `-' ' '     '   `-' `-^ ' ` `-'   `-^--'  `-^ `' `-^ 
- ,-.|                                                                  
- `-+'                                                                  
+ .\GoldenQueryDataW.exe -h
+,---.      .    .           ,,--.                    .-,--.      .
+|  -'  ,-. |  ,-| ,-. ,-.   |`. | . . ,-. ,-. . .    ' |   \ ,-. |- ,-.
+|  ,-' | | |  | | |-' | |   |  .| | | |-' |   | |    , |   / ,-| |  ,-|
+`---|  `-' `' `-^ `-' ' '   `---\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^
+ ,-.|                            `             /|
+ `-+'                                         `-'
 
 App description
-Usage: ./GoldenMakeDataL.out [OPTIONS]
+Usage: D:\Code\Linux\GoldenTool\GoldenQueryDataW\bin\x64\Release\GoldenQueryDataW.exe [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -28,48 +26,41 @@ Options:
   -w,--password TEXT          pass word (=golden)
   -s,--starttime TEXT         start time (=now)
                               format:
-                               "YYYY-MM-DD hh:mm:ss"
-                               "maxtime" start time is read snapshot max datetime
+                               "YYYY-MM-DD hh:mm:ss.ms"
+                               "mintime" start time is min UTC time : 1970-01-01 00:00:00.000
                                "now" start time is local real time
                                Enclosed in single or double quotes.
   -e,--endtime TEXT           end time (=forever)
                               format:
-                               "YYYY-MM-DD hh:mm:ss"
+                               "YYYY-MM-DD hh:mm:ss.ms"
                                "forever" end time is max UTC time
-  -E,--elapsetime INT         elpase time (=1000) ms
-  -i,--increment INT          increment time (=1000) ms
-  -H,--history                put history data
-  --low INT                   min value (=-100)
-  --high INT                  max value (=100)
-  -g,--generator TEXT         data generator (=sin), sin, line, rand, file
+  --search TEXT               search condition
   --first_point INT           first point's id (=1)
   --point_count INT           point count (=1)
   --point_interval INT        point interval (=1)
-  --write_mode TEXT           write mode (=time)
-                               time : same time once
-                               point : same point once
+  --query_mode TEXT           query mode (=history_archived)
+                               1.history_archived
+                               2.history_archived_ex
+                               3.plot_value
+                               4.interval_value
+                               5.summary_value
+  --query_batch_count INT     query values count per batch (=1000)
+  --interval INT              query interval (=1000)
   --thread_count INT          thread count (=1)
   --print_log                 print log to console
   --log_level INT             log level (=2) as info
-  --func_period INT           generator function period (=36)
-                                when write_mode=point, write func_period*100 values count per batch, so set 3600 or more is better.
-  --Attention                 Attention:
-                              1.The start-to-end time span should not be too long,
-                               depending on the number of archive files in the time span.
-                               It is not recommended to exceed 100.
-                               You can write a few more commands and execute them sequentially.
-                              2.When write_mode = point, Add the parameter --func_period 3600.
-                               Write func_period * 100 values per batch per point,
-                               i.e. 100 repetitions of the same waveform.
-                               Adjusting this parameter controls the amount of data written per batch,
-                               and it uses very little memory.
-                              3.When write_mode = time, Add the parameter --func_period 36.
-                               2 * 8 * point_count * func_period Byte memory will be requested.
-                               If you have too many points, it will take up a lot of memory,
-                               so it is not appropriate to set too much.
-                               You can view it using the top command.
+                               0.trace
+                               1.debug
+                               2.info
+                               3.warn
+                               4.err
+                               5.critical
+                               6.off
+  --result_file TEXT          result file path, default is empty.
+  --Attention                 # 注意：
+                              #   1.可以传入带毫秒的时间范围
+                              #   2.如果查询多个标签点，会自动分配到多个线程查询
 ```
-
 ```
 ./GoldenQueryDataL.out -h
 ,---.      .    .           ,,--.                    .-,--.      .      
@@ -93,16 +84,14 @@ Options:
   -w,--password TEXT          pass word (=golden)
   -s,--starttime TEXT         start time (=now)
                               format:
-                               "YYYY-MM-DD hh:mm:ss"
-                               "maxtime" start time is read snapshot max datetime
+                               "YYYY-MM-DD hh:mm:ss.ms"
+                               "mintime" start time is min UTC time : 1970-01-01 00:00:00.000
                                "now" start time is local real time
                                Enclosed in single or double quotes.
   -e,--endtime TEXT           end time (=forever)
                               format:
-                               "YYYY-MM-DD hh:mm:ss"
+                               "YYYY-MM-DD hh:mm:ss.ms"
                                "forever" end time is max UTC time
-  -E,--elapsetime INT         elpase time (=1000) ms
-  -i,--increment INT          increment time (=1000) ms
   --first_point INT           first point's id (=1)
   --point_count INT           point count (=1)
   --point_interval INT        point interval (=1)
@@ -114,30 +103,38 @@ Options:
                                5.summary_value
   --query_batch_count INT     query values count per batch (=1000)
   --interval INT              query interval (=1000)
-  --user_count INT            user count (=1)
   --thread_count INT          thread count (=1)
   --print_log                 print log to console
   --log_level INT             log level (=2) as info
+                               0.trace
+                               1.debug
+                               2.info
+                               3.warn
+                               4.err
+                               5.critical
+                               6.off
+  --result_file TEXT          result file path, default is empty.
+  --Attention                 Attention:
+                              1.Time range with milliseconds can be passed in.
+                              2.If multiple points are queried, they are automatically assigned to multiple query threads.
 ```
-
-#生成
-VS2017开发
 
 #测试
 在shell脚本配置参数：
 ```
 #!/bin/sh
-#
-# 按标签点为单位批量写大时间范围的快照数据
-# 注意：
-#   1.开始时间到结束时间的跨度不宜太长，取决于时间跨度内的文件数量，建议不要超过100个，可以多写几个命令，顺序执行
-#   2.当write_mode=point时，增加参数--func_period 3600，每个点每批写入func_period*100个，也就是同一个波形重复100次，调整这个参数可以控制每批写入的数据量，这里占用内存很少
-#   3.当write_mode=time时，参数--func_period默认为36，会申请 2*8*point_count*func_period 的内存，如果点数过多的话，会占用大量内存，故不宜设置太大，具体占多少内存合适，top命令自己看着调吧
-./GoldenMakeDataL.out -n test_01 -a 192.168.70.233 --write_mode point -s '2019-09-06 23:00:00' -e '2019-09-08 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_02 -a 192.168.70.233 --write_mode point -s '2019-09-09 00:00:00' -e '2019-09-11 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_03 -a 192.168.70.233 --write_mode point -s '2019-09-12 00:00:00' -e '2019-09-14 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_04 -a 192.168.70.233 --write_mode point -s '2019-09-15 00:00:00' -e '2019-09-17 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_05 -a 192.168.70.233 --write_mode point -s '2019-09-18 00:00:00' -e '2019-09-20 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+#后台执行命令
+nohup ./GoldenQueryDataL.out -n test-1 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 121 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+
+nohup ./GoldenQueryDataL.out -n test-2 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 122 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+
+nohup ./GoldenQueryDataL.out -n test-3 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 123 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+
+nohup ./GoldenQueryDataL.out -n test-4 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 124 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+
+nohup ./GoldenQueryDataL.out -n test-5 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 125 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+
+nohup ./GoldenQueryDataL.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 126 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1
 ```
 在命令行直接传入参数：
 ```
