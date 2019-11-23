@@ -7,6 +7,7 @@
 #include <queue>
 #include <exception>
 #include <unordered_map>
+#include <csignal>
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -693,6 +694,14 @@ bool sync_data() {
 	return true;
 }
 
+void sig_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_running = false;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	std::cout << ",-_/,.       .                 .-,--.      .        .---.             " << endl;
@@ -703,7 +712,8 @@ int main(int argc, char* argv[])
 	std::cout << "                        `-'                               `-'         " << endl << endl;
 	// http://patorjk.com/software/taag/#p=display&f=Stampatello&t=History%20Data%20Sync
 
-	
+	signal(SIGINT, sig_handler);
+
 	CLI::App app{ "App description" };
 	{
 		golden_config::task_name_ = "main";
