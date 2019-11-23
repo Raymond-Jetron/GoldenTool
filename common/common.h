@@ -431,6 +431,32 @@ private:
 	std::ifstream ifs_;
 };
 
+#include <iconv.h> 
+// 代码转换操作类 
+class code_converter {
+private:
+	iconv_t cd;
+public:
+	// 构造 
+	code_converter(const char *from_charset, const char *to_charset) {
+		cd = iconv_open(to_charset, from_charset);
+	}
+
+	// 析构 
+	~code_converter() {
+		iconv_close(cd);
+	}
+
+	// 转换输出 
+	int convert(char *inbuf, int inlen, char *outbuf, int outlen) {
+		char **pin = &inbuf;
+		char **pout = &outbuf;
+
+		memset(outbuf, 0, outlen);
+		return iconv(cd, pin, (size_t *)&inlen, pout, (size_t *)&outlen);
+	}
+};
+
 #endif // !__COMMON_H__
 
 
