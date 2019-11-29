@@ -162,11 +162,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\HistoryDataSyncL\golden_config.cpp" />
     <ClCompile Include="..\HistoryDataSyncL\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\HistoryDataSyncL\golden_config.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

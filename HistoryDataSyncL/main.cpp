@@ -18,7 +18,6 @@
 
 #include "CLI/CLI.hpp"
 #include "goldenapi.h"
-#include "golden_config.h"
 #include "common.h"
 #include "scope_guard.h"
 #include "thread_pool.h"
@@ -32,6 +31,31 @@
 using namespace std;
 namespace spd = spdlog;
 typedef std::shared_ptr<spdlog::logger> plog;
+
+namespace golden_config
+{
+	std::string task_name_;
+	std::string source_host_name_;
+	int source_port_;
+	std::string source_user_;
+	std::string source_password_;
+	std::string sink_host_name_;
+	int sink_port_;
+	std::string sink_user_;
+	std::string sink_password_;
+	std::string start_time_;
+	std::string end_time_;
+	int thread_count_;
+	std::string points_dir_;
+	bool output_points_prop_;
+	int log_level_;
+	bool print_log_;
+
+	int start_time_int_;
+	short start_time_ms_;
+	int end_time_int_;
+	short end_time_ms_;
+};
 
 #define VALUE_TYPE(type) (type >= GOLDEN_REAL16 && type <= GOLDEN_REAL64) ? 1 : ((type >= GOLDEN_BOOL && type <= GOLDEN_INT64) ? -1 : 0)
 #define BATCH_COUNT 10000

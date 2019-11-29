@@ -15,16 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\HistoryDataSyncL\golden_config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\HistoryDataSyncL\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\HistoryDataSyncL\golden_config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

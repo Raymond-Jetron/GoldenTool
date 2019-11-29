@@ -431,6 +431,8 @@ private:
 	std::ifstream ifs_;
 };
 
+#ifdef _WIN32
+#elif _LINUX
 #include <iconv.h> 
 // 代码转换操作类 
 class code_converter {
@@ -456,6 +458,7 @@ public:
 		return iconv(cd, pin, (size_t *)&inlen, pout, (size_t *)&outlen);
 	}
 };
+#endif
 
 #endif // !__COMMON_H__
 

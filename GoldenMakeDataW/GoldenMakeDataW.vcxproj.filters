@@ -15,23 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\GoldenMakeDataL\golden_config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\common.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\scope_guard.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\thread_pool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\GoldenMakeDataL\golden_config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\GoldenMakeDataL\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

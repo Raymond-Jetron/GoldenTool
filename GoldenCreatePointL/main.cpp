@@ -18,7 +18,6 @@
 
 #include "CLI/CLI.hpp"
 #include "goldenapi.h"
-#include "golden_config.h"
 #include "common.h"
 #include "scope_guard.h"
 #include "thread_pool.h"
@@ -26,6 +25,26 @@
 using namespace std;
 namespace spd = spdlog;
 typedef std::shared_ptr<spdlog::logger> plog;
+
+namespace golden_config
+{
+	std::string task_name_;
+	std::vector<std::string> host_name_;
+	int port_;
+	std::string user_;
+	std::string password_;
+	int thread_count_;
+	std::string points_dir_;
+	bool print_log_;
+	int log_level_;
+	std::string ecoding_;
+	std::string result_file_;
+
+	int start_time_int_;
+	short start_time_ms_;
+	int end_time_int_;
+	short end_time_ms_;
+};
 
 // 连接池
 queue<golden_int32> connect_queue;
@@ -59,14 +78,14 @@ struct SEnumName
 template<> const char* SEnumName<GOLDEN_TYPE>::List[] =
 {
 	"BOOL",					// GOLDEN_BOOL = 0,        //!< 布尔类型，0值或1值。
-	"UINT8",					// GOLDEN_UINT8 = 1,       //!< 无符号8位整数，占用1字节。
+	"UINT8",				// GOLDEN_UINT8 = 1,       //!< 无符号8位整数，占用1字节。
 	"INT8",					// GOLDEN_INT8 = 2,        //!< 有符号8位整数，占用1字节。
 	"CHAR",					// GOLDEN_CHAR = 3,        //!< 单字节字符，占用1字节。
 	"UINT16",				// GOLDEN_UINT16 = 4,      //!< 无符号16位整数，占用2字节。
-	"INT16",					// GOLDEN_INT16 = 5,       //!< 有符号16位整数，占用2字节。
+	"INT16",				// GOLDEN_INT16 = 5,       //!< 有符号16位整数，占用2字节。
 	"UINT32",				// GOLDEN_UINT32 = 6,      //!< 无符号32位整数，占用4字节。
-	"INT32",					// GOLDEN_INT32 = 7,       //!< 有符号32位整数，占用4字节。
-	"INT64",					// GOLDEN_INT64 = 8,       //!< 有符号64位整数，占用8字节。
+	"INT32",				// GOLDEN_INT32 = 7,       //!< 有符号32位整数，占用4字节。
+	"INT64",				// GOLDEN_INT64 = 8,       //!< 有符号64位整数，占用8字节。
 	"FLOAT16",				// GOLDEN_REAL16 = 9,      //!< 16位浮点数，占用2字节。
 	"FLOAT32",				// GOLDEN_REAL32 = 10,     //!< 32位单精度浮点数，占用4字节。
 	"FLOAT64",				// GOLDEN_REAL64 = 11,     //!< 64位双精度浮点数，占用8字节。

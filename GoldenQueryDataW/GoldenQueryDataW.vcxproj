@@ -162,11 +162,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\GoldenQueryDataL\golden_config.cpp" />
     <ClCompile Include="..\GoldenQueryDataL\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\GoldenQueryDataL\golden_config.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

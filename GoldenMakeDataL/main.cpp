@@ -15,7 +15,6 @@
 
 #include "CLI/CLI.hpp"
 #include "goldenapi.h"
-#include "golden_config.h"
 #include "common.h"
 #include "scope_guard.h"
 #include "thread_pool.h"
@@ -23,6 +22,38 @@
 using namespace std;
 namespace spd = spdlog;
 typedef std::shared_ptr<spdlog::logger> plog;
+
+namespace golden_config
+{
+	//外部传入参数
+	std::string task_name_;
+	std::vector<std::string> host_name_;
+	int port_;
+	std::string user_;
+	std::string password_;
+	std::string start_time_;
+	std::string end_time_;
+	int elapse_time_;
+	int increment_time_;
+	bool put_history_data_;
+	int min_value_;
+	int max_value_;
+	std::string generator_;
+	std::string search_condition_;
+	int first_point_;
+	int point_count_;
+	int point_interval_;
+	std::string write_mode_;
+	int threadcount_;
+	bool print_log_;
+	int log_level_;
+	int func_period_;
+	std::string result_file_;
+
+	//内部使用参数
+	int start_time_int_;
+	int end_time_int_;
+};
 
 enum data_type_e
 {
