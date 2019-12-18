@@ -432,6 +432,24 @@ private:
 };
 
 #ifdef _WIN32
+// 代码转换操作类 
+class code_converter {
+private:
+public:
+	// 构造 
+	code_converter(const char *from_charset, const char *to_charset) {
+	}
+
+	// 析构 
+	~code_converter() {
+	}
+
+	// 转换输出 
+	int convert(char *inbuf, int inlen, char *outbuf, int outlen) {
+		outbuf = inbuf;
+		return 0;
+	}
+};
 #elif _LINUX
 #include <iconv.h> 
 // 代码转换操作类 
