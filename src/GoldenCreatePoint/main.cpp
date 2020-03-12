@@ -828,12 +828,12 @@ void sig_handler(int sig)
 
 int main(int argc, char *argv[])
 {
-	std::cout << ",---.      .    .            ,--.             .       .-,--.           .  " << endl;
-	std::cout << "|  -'  ,-. |  ,-| ,-. ,-.   | `-' ,-. ,-. ,-. |- ,-.   '|__/ ,-. . ,-. |- " << endl;
-	std::cout << "|  ,-' | | |  | | |-' | |   |   . |   |-' ,-| |  |-'   ,|    | | | | | |  " << endl;
-	std::cout << "`---|  `-' `' `-^ `-' ' '   `--'  '   `-' `-^ `' `-'   `'    `-' ' ' ' `' " << endl;
-	std::cout << " ,-.|                                                                     " << endl;
-	std::cout << " `-+'                                                                     " << endl << endl;
+	std::cout << " ,--.             .       .-,--.           .  " << endl;
+	std::cout << "| `-' ,-. ,-. ,-. |- ,-.   '|__/ ,-. . ,-. |- " << endl;
+	std::cout << "|   . |   |-' ,-| |  |-'   ,|    | | | | | |  " << endl;
+	std::cout << "`--'  '   `-' `-^ `' `-'   `'    `-' ' ' ' `' " << endl;
+	std::cout << "                                              " << endl;
+	std::cout << "                                              " << endl << endl;
 	// http://patorjk.com/software/taag/#p=display&f=Stampatello&t=Golden%20Create%20Point
 
 	CLI::App app{ "App description" };
@@ -846,8 +846,8 @@ int main(int argc, char *argv[])
 		app.add_option("-p,--port", golden_config::port_, "port number (=6327)");
 		golden_config::user_ = "sa";
 		app.add_option("-u,--user", golden_config::user_, "user name (=sa)");
-		golden_config::password_ = "golden";
-		app.add_option("-w,--password", golden_config::password_, "pass word (=golden)");
+		golden_config::password_ = "admin";
+		app.add_option("-w,--password", golden_config::password_, "pass word (=admin)");
 		golden_config::thread_count_ = 1;
 		app.add_option("--thread_count", golden_config::thread_count_, "thread count (=1)");
 		app.add_option("--points_dir", golden_config::points_dir_, "point file directory (*.csv)")->required();

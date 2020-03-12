@@ -6,8 +6,8 @@ CONFIG -= qt
 DEFINES -= UNICODE
 DEFINES += UMBCS
 
-#x86,x64,x86_win,x64_win,ARM,ARM64,MIPS
-CPU_TYPE = x64
+#x64,x86_win,x64_win,ARM,ARM64,MIPS
+CPU_TYPE = x64_win
 SolutionDir = $$PWD/../../..
 ProjectName = HistoryDataSync
 CONFIG(debug, debug|release) {
@@ -32,7 +32,22 @@ win32{
     DIFINES += _WIN32
     DEFINES -= _LINUX
     MAKEFILE = windows.Makefile
+    SolutionDir_WIN = $$SolutionDir
+    SolutionDir_WIN ~= s,/,\\,g
+    DESTDIR_WIN = $$DESTDIR
+    DESTDIR_WIN ~= s,/,\\,g
+    !exists($$DESTDIR_WIN\\goldenapi64.dll){
+        system("copy $$SolutionDir_WIN\\third\\api\\$$CPU_TYPE\\goldenapi64.dll $$DESTDIR_WIN")
+    }
+
+   contains(QT_ARCH, i386) {
+        message("32-bit")
+    } else {
+        message("64-bit")
+    }
+
     LIBS += -L$$SolutionDir/third/api/$$CPU_TYPE/ -lgoldenapi64
+    DEPENDPATH += $$SolutionDir/third/api/$$CPU_TYPE
 }else{
     DIFINES -= _WIN32
     DEFINES += _LINUX

@@ -1,19 +1,19 @@
 #简介
-GoldenQueryData，数据查询工具。
-带L的为linux版，带W的为windows版。
+QueryData，数据查询工具。
+.exe的为windows版，.out的为linux版。
 
 #入门
 ```
- .\GoldenQueryDataW.exe -h
-,---.      .    .           ,,--.                    .-,--.      .
-|  -'  ,-. |  ,-| ,-. ,-.   |`. | . . ,-. ,-. . .    ' |   \ ,-. |- ,-.
-|  ,-' | | |  | | |-' | |   |  .| | | |-' |   | |    , |   / ,-| |  ,-|
-`---|  `-' `' `-^ `-' ' '   `---\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^
- ,-.|                            `             /|
- `-+'                                         `-'
+ .\QueryData.exe -h
+,,--.                    .-,--.      .
+|`. | . . ,-. ,-. . .    ' |   \ ,-. |- ,-.
+|  .| | | |-' |   | |    , |   / ,-| |  ,-|
+`---\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^
+     `             /|
+                  `-'
 
 App description
-Usage: D:\Code\Linux\GoldenTool\GoldenQueryDataW\bin\x64\Release\GoldenQueryDataW.exe [OPTIONS]
+Usage: .\QueryData.exe [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -23,7 +23,7 @@ Options:
                                e.g. -a 192.168.0.2 192.168.0.3 192.168.0.4 192.168.0.5
   -p,--port INT               port number (=6327)
   -u,--user TEXT              user name (=sa)
-  -w,--password TEXT          pass word (=golden)
+  -w,--password TEXT          pass word (=admin)
   -s,--starttime TEXT         start time (=now)
                               format:
                                "YYYY-MM-DD hh:mm:ss.ms"
@@ -62,16 +62,16 @@ Options:
                               #   2.如果查询多个标签点，会自动分配到多个线程查询
 ```
 ```
-./GoldenQueryDataL.out -h
-,---.      .    .           ,,--.                    .-,--.      .      
-|  -'  ,-. |  ,-| ,-. ,-.   |`. | . . ,-. ,-. . .    ' |   \ ,-. |- ,-. 
-|  ,-' | | |  | | |-' | |   |  .| | | |-' |   | |    , |   / ,-| |  ,-| 
-`---|  `-' `' `-^ `-' ' '   `---\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^ 
- ,-.|                            `             /|                       
- `-+'                                         `-'                       
+./QueryData.out -h
+,,--.                    .-,--.      .      
+|`. | . . ,-. ,-. . .    ' |   \ ,-. |- ,-. 
+|  .| | | |-' |   | |    , |   / ,-| |  ,-| 
+`---\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^ 
+     `             /|                       
+                  `-'                       
 
 App description
-Usage: ./GoldenQueryDataL.out [OPTIONS]
+Usage: ./QueryData.out [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -81,7 +81,7 @@ Options:
                                e.g. -a 192.168.0.2 192.168.0.3 192.168.0.4 192.168.0.5
   -p,--port INT               port number (=6327)
   -u,--user TEXT              user name (=sa)
-  -w,--password TEXT          pass word (=golden)
+  -w,--password TEXT          pass word (=admin)
   -s,--starttime TEXT         start time (=now)
                               format:
                                "YYYY-MM-DD hh:mm:ss.ms"
@@ -124,19 +124,19 @@ Options:
 ```
 #!/bin/sh
 #后台执行命令
-nohup ./GoldenQueryDataL.out -n test-1 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 121 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-1 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 121 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./GoldenQueryDataL.out -n test-2 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 122 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-2 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 122 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./GoldenQueryDataL.out -n test-3 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 123 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-3 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 123 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./GoldenQueryDataL.out -n test-4 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 124 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-4 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 124 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./GoldenQueryDataL.out -n test-5 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 125 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-5 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 125 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./GoldenQueryDataL.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 126 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1
+nohup ./QueryData.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 126 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1
 ```
 在命令行直接传入参数：
 ```
-./GoldenQueryDataL.out -n test -a 192.168.152.132 -s '2019-09-18 0:0:0.000' -e '2019-09-18 1:59:59.999' --first_point 121 --point_count 2 --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 0
+./QueryData.out -n test -a 192.168.152.132 -s '2019-09-18 0:0:0.000' -e '2019-09-18 1:59:59.999' --first_point 121 --point_count 2 --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 0
 ```

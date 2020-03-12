@@ -1,19 +1,19 @@
 #简介
-GoldenMakeData，数据生成工具。
-带L的为linux版，带W的为windows版。
+MakeData，数据生成工具。
+.exe的为windows版，.out的为linux版。
 
 #入门
 ```
-.\GoldenMakeDataW.exe -h
-,---.      .    .           ,-,-,-.       .         .-,--.      .
-|  -'  ,-. |  ,-| ,-. ,-.   `,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-.
-|  ,-' | | |  | | |-' | |     | ; | . ,-| |<  |-'   , |   / ,-| |  ,-|
-`---|  `-' `' `-^ `-' ' '     '   `-' `-^ ' ` `-'   `-^--'  `-^ `' `-^
- ,-.|
- `-+'
+.\MakeData.exe -h
+,-,-,-.       .         .-,--.      .
+`,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-.
+  | ; | . ,-| |<  |-'   , |   / ,-| |  ,-|
+  '   `-' `-^ ' ` `-'   `-^--'  `-^ `' `-^
+
+
 
 App description
-Usage: D:\Code\Linux\GoldenTool\GoldenMakeDataW\bin\x64\Release\GoldenMakeDataW.exe [OPTIONS]
+Usage: .\MakeData.exe [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -23,7 +23,7 @@ Options:
                                e.g. -a 192.168.0.2 192.168.0.3 192.168.0.4 192.168.0.5
   -p,--port INT               port number (=6327)
   -u,--user TEXT              user name (=sa)
-  -w,--password TEXT          pass word (=golden)
+  -w,--password TEXT          pass word (=admin)
   -s,--starttime TEXT         start time (=now)
                               format:
                                "YYYY-MM-DD hh:mm:ss"
@@ -67,13 +67,13 @@ Options:
 ```
 
 ```
-./GoldenMakeDataL.out -h
-,---.      .    .           ,-,-,-.       .         .-,--.      .      
-|  -'  ,-. |  ,-| ,-. ,-.   `,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-. 
-|  ,-' | | |  | | |-' | |     | ; | . ,-| |<  |-'   , |   / ,-| |  ,-| 
-`---|  `-' `' `-^ `-' ' '     '   `-' `-^ ' ` `-'   `-^--'  `-^ `' `-^ 
- ,-.|                                                                  
- `-+'                                                                  
+./MakeDataL.out -h
+,-,-,-.       .         .-,--.      .      
+`,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-. 
+  | ; | . ,-| |<  |-'   , |   / ,-| |  ,-| 
+  '   `-' `-^ ' ` `-'   `-^--'  `-^ `' `-^ 
+                                           
+                                           
 
 App description
 Usage: ./GoldenMakeDataL.out [OPTIONS]
@@ -149,13 +149,13 @@ Options:
 #   1.开始时间到结束时间的跨度不宜太长，取决于时间跨度内的文件数量，建议不要超过100个，可以多写几个命令，顺序执行
 #   2.当write_mode=point时，增加参数--func_period 3600，每个点每批写入func_period*100个，也就是同一个波形重复100次，调整这个参数可以控制每批写入的数据量，这里占用内存很少
 #   3.当write_mode=time时，参数--func_period默认为36，会申请 2*8*point_count*func_period 的内存，如果点数过多的话，会占用大量内存，故不宜设置太大，具体占多少内存合适，top命令自己看着调吧
-./GoldenMakeDataL.out -n test_01 -a 192.168.70.233 --write_mode point -s '2019-09-06 23:00:00' -e '2019-09-08 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_02 -a 192.168.70.233 --write_mode point -s '2019-09-09 00:00:00' -e '2019-09-11 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_03 -a 192.168.70.233 --write_mode point -s '2019-09-12 00:00:00' -e '2019-09-14 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_04 -a 192.168.70.233 --write_mode point -s '2019-09-15 00:00:00' -e '2019-09-17 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
-./GoldenMakeDataL.out -n test_05 -a 192.168.70.233 --write_mode point -s '2019-09-18 00:00:00' -e '2019-09-20 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_01 -a 192.168.70.233 --write_mode point -s '2019-09-06 23:00:00' -e '2019-09-08 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_02 -a 192.168.70.233 --write_mode point -s '2019-09-09 00:00:00' -e '2019-09-11 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_03 -a 192.168.70.233 --write_mode point -s '2019-09-12 00:00:00' -e '2019-09-14 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_04 -a 192.168.70.233 --write_mode point -s '2019-09-15 00:00:00' -e '2019-09-17 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_05 -a 192.168.70.233 --write_mode point -s '2019-09-18 00:00:00' -e '2019-09-20 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
 ```
 在命令行直接传入参数：
 ```
-./GoldenMakeDataL.out -n test_01 -a 192.168.70.233 --write_mode point -s '2019-09-06 23:00:00' -e '2019-09-08 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
+./MakeData.out -n test_01 -a 192.168.70.233 --write_mode point -s '2019-09-06 23:00:00' -e '2019-09-08 23:59:59' --log_level 3 -E 0 -i 200 --first_point 1 --point_count 960000 --thread_count 48 --func_period 3600
 ```

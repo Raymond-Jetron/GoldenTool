@@ -1,5 +1,5 @@
 @echo off
-set app_name=GoldenQueryData
+set app_name=QueryData
 REM win,el6,el7,ubuntu16
 set os_type=win
 REM x86_64,arm
@@ -15,10 +15,10 @@ echo Publish %app_name%
 
 REM 不同系统不同文件后缀
 if "%os_type%" == "win" (
-set exe_name=%app_name%W
+set exe_name=%app_name%
 set test_file_extension=bat
 ) else (
-set exe_name=%app_name%L
+set exe_name=%app_name%
 set test_file_extension=sh
 )
 
@@ -39,22 +39,22 @@ echo .
 REM 复制执行程序
 if "%os_type%" == "win" (
 echo copy %exe_name%
-md %publish_path%\%exe_name%\bin\x64\Release
-md %publish_path%\%exe_name%\bin\x86\Release
-xcopy /y /s /e %exe_name%\bin\x64\Release\%exe_name%.exe %publish_path%\%exe_name%\bin\x64\Release
-xcopy /y /s /e %exe_name%\bin\x64\Release\goldenapi64.dll %publish_path%\%exe_name%\bin\x64\Release
-xcopy /y /s /e depend\win %publish_path%\%exe_name%\bin\x64\Release
-xcopy /y /s /e %exe_name%\bin\x86\Release\%exe_name%.exe %publish_path%\%exe_name%\bin\x86\Release
-xcopy /y /s /e %exe_name%\bin\x86\Release\goldenapi.dll %publish_path%\%exe_name%\bin\x86\Release
-xcopy /y /s /e depend\win %publish_path%\%exe_name%\bin\x86\Release
+md %publish_path%\%exe_name%\x64
+md %publish_path%\%exe_name%\x86
+xcopy /y /s /e bin\%exe_name%\x64_win\Release\%exe_name%.exe %publish_path%\%exe_name%\x64
+xcopy /y /s /e bin\%exe_name%\x64_win\Release\goldenapi64.dll %publish_path%\%exe_name%\x64
+xcopy /y /s /e depend\win %publish_path%\%exe_name%\x64
+xcopy /y /s /e bin\%exe_name%\x86_win\Release\%exe_name%.exe %publish_path%\%exe_name%\x86
+xcopy /y /s /e bin\%exe_name%\x86_win\Release\goldenapi.dll %publish_path%\%exe_name%\x86
+xcopy /y /s /e depend\win %publish_path%\%exe_name%\x86
 echo .
 
 ) else (
 echo copy %exe_name%
-md %publish_path%\%exe_name%\bin\x64\Release
-md %publish_path%\%exe_name%\bin\x86\Release
-xcopy /y /s /e %exe_name%\bin\x64\Release %publish_path%\%exe_name%\bin\x64\Release
-xcopy /y /s /e %exe_name%\bin\x86\Release %publish_path%\%exe_name%\bin\x86\Release
+md %publish_path%\%exe_name%\x64
+md %publish_path%\%exe_name%\x86
+xcopy /y /s /e %exe_name%\bin\x64\Release %publish_path%\%exe_name%\x64
+xcopy /y /s /e %exe_name%\bin\x86\Release %publish_path%\%exe_name%\x86
 echo .
 
 )

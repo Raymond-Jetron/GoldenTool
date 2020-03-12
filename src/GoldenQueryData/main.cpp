@@ -978,12 +978,12 @@ bool query_data()
 
 int main(int argc, char *argv[])
 {
-	std::cout << ",---.      .    .           ,,--.                    .-,--.      .      " << endl;
-	std::cout << "|  -'  ,-. |  ,-| ,-. ,-.   |`. | . . ,-. ,-. . .    ' |   \\ ,-. |- ,-. " << endl;
-	std::cout << "|  ,-' | | |  | | |-' | |   |  .| | | |-' |   | |    , |   / ,-| |  ,-| " << endl;
-	std::cout << "`---|  `-' `' `-^ `-' ' '   `---\\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^ " << endl;
-	std::cout << " ,-.|                            `             /|                       " << endl;
-	std::cout << " `-+'                                         `-'                       " << endl << endl;
+	std::cout << ",,--.                    .-,--.      .      " << endl;
+	std::cout << "|`. | . . ,-. ,-. . .    ' |   \\ ,-. |- ,-. " << endl;
+	std::cout << "|  .| | | |-' |   | |    , |   / ,-| |  ,-| " << endl;
+	std::cout << "`---\\ `-^ `-' '   `-|    `-^--'  `-^ `' `-^ " << endl;
+	std::cout << "     `             /|                       " << endl;
+	std::cout << "                  `-'                       " << endl << endl;
 	// http://patorjk.com/software/taag/#p=display&f=Stampatello&t=Golden%20Query%20Data
 
 	CLI::App app{ "App description" };
@@ -996,8 +996,8 @@ int main(int argc, char *argv[])
 		app.add_option("-p,--port", golden_config::port_, "port number (=6327)");
 		golden_config::user_ = "sa";
 		app.add_option("-u,--user", golden_config::user_, "user name (=sa)");
-		golden_config::password_ = "golden";
-		app.add_option("-w,--password", golden_config::password_, "pass word (=golden)");
+		golden_config::password_ = "admin";
+		app.add_option("-w,--password", golden_config::password_, "pass word (=admin)");
 		golden_config::start_time_ = "now";
 		app.add_option("-s,--starttime", golden_config::start_time_, "start time (=now)\nformat:\n \"YYYY-MM-DD hh:mm:ss.ms\"\n \"mintime\" start time is min UTC time : 1970-01-01 00:00:00.000\n \"now\" start time is local real time\n Enclosed in single or double quotes.");
 		golden_config::end_time_ = "forever";
