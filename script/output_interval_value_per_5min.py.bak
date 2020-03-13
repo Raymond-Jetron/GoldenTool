@@ -1,0 +1,218 @@
+#日期：2019-11-06
+#作者：王晋晖
+#功能说明：定时导出之前1小时5分钟插值历史数据
+#注意：用到了apscheduler，安装方法: pip install apscheduler，这是一个定时器库，可以实现精准定时器，无累积误差
+#     只能用于普通类型的标签点，不支持OLDEN_COOR、GOLDEN_BLOB、GOLDEN_STRING
+#选项参数:
+#  -h [ --help ]                         显示帮助信息
+#  -n [ --task_name ] arg (=main)        任务名称
+#  --ip arg (=127.0.0.1)                 数据库地址
+#  --port arg (=6327)                    数据库端口
+#  --user arg (=sa)                      数据库用户名
+#  --pwd arg (=golden)                   数据库密码
+#  --thread_count arg (=2)               并发线程数，默认为2
+#  --points_dir arg                      标签点表所在文件夹目录
+#  --precision arg (=5)                  浮点数精度，有效数字，默认为5
+#  --log_level arg (=2)                  日志显示级别：
+#                                            0:trace
+#                                            1:debug
+#                                            2:info
+#                                            3:warn
+#                                            4:error
+#                                            5:critical
+#  --print_log arg (=1)                  是否在控制台显示详细日志，默认：true
+#  --use_alias arg (=0)                  是否使用别名作为测点名称，默认：false
+#  --after_cmd arg (=pause)              导出后执行命令，默认：pause
+#                                        参数示例：
+#
+#  --source_from arg (=1)                数据来源：
+#                                            0:元数据(只输出到默认文件)
+#                                            1:存档数据
+#                                            2:插值数据
+#                                            3:订阅快照数据
+#                                            4:轮询快照数据
+#                                            默认:1
+#  --point_count_per_file arg (=10000)   每个文件的标签点个数
+#                                        source_from=0时生效
+#  --start arg (=2019-11-06 10:00:00)    开始时间
+#                                        格式：2018-01-01 08:00:00
+#                                        source_from=1或2 时生效
+#  --end arg (=2019-11-06 11:00:00)      结束时间
+#                                        格式：2018-01-02 08:00:00
+#                                        source_from=1或2 时生效
+#  --interval arg (=3600)                时间间隔，单位s
+#                                        默认为3600s，最小为1s
+#                                        source_from=2 时生效
+#  --interpolation_mode arg (=3)         插值模式：
+#                                            0:寻找下一个最近的数据
+#                                            1:寻找上一个最近的数据
+#                                            2:取指定时间的数据，没有则返回空
+#                                            3:取指定时间的内插值数据
+#                                            source_from=2 时生效
+#  --aggregation arg (=0)                是否将数据聚集导出到一起，默认：false
+#                                        如果为true，则数据集中到一个文件导出
+#                                        如果为false，则每个标签点的数据单独导出
+#                                        source_from=2 时生效
+#  --output_target arg (=3)              输出目标：
+#                                            0:不输出
+#                                            1:输出到CSV文件
+#                                            2:输出到Kafka队列
+#                                            3:输出到控制台
+#                                            默认:3
+#  --output_title arg (=1)               输出标题，默认输出
+#  --datas_dir arg                       导出数据所在文件夹目录
+#                                        output_target=1时生效
+#  --file_name_format arg (={pn}_{st}-{et}.csv)
+#                                        导出文件名格式，参数说明：
+#                                            {fn}:file nae,标签点文件名
+#                                            {pn}:point name,标签点名称
+#                                            {id}:id,标签点ID
+#                                            {st}:start time,开始时间
+#                                            {et}:end time,结束时间
+#                                        示例：
+#                                            {pn}_{st}-{et}.csv
+#                                            [{fn}][{pn}][{id}][{st}-{et}].csv
+#                                            [{pn}][{st}-{et}][历史存储值].csv
+#                                            [{fn}][{st}-{et}][历史插值].csv
+#                                        注：要符合文件命名规范
+#                                        output_target=1时生效
+#  --skip_files arg (=1)                 是否跳过已经导出的数据文件
+#                                        默认:true 跳过
+#                                        output_target=1时生效
+#  --broker_list arg                     要输出到kafka集群的broker_list
+#                                        output_target=2时生效
+#  --topic arg                           要输出到kafka集群的topic
+#                                        output_target=2时生效
+#  --partition arg (=1)                  topic的分区号
+#                                        output_target=2时生效
+#  --message_count arg (=1000)           每次发送给kafka数据包中的数据条数
+#                                        output_target=2时生效
+
+#import time
+import os
+#import sys
+import subprocess
+#from threading import Timer
+from datetime import datetime,timedelta
+from apscheduler.schedulers.blocking import BlockingScheduler
+
+#执行周期，单位：分钟
+execution_cycle=5
+#当前路径
+CUR_PATH=os.path.dirname(__file__)
+#执行程序路径
+exe_path=os.path.join(CUR_PATH,"GoldenDataExport.exe")
+print(exe_path)
+#实时数据库IP
+ip="192.168.152.129"
+#实时库端口
+port="6327"
+#实时库用户名
+user="sa"
+#实时库密码
+pwd="golden"
+#插值间隔
+time_interval=300
+#线程数
+thread_count=1
+#标签点文件所在文件夹
+points_dir=os.path.join(CUR_PATH,"points")
+#2为获取插值数据
+source_from=2
+#3为取指定时间的内插值数据
+interpolation_mode=3
+#日志级别
+log_level=2
+#是否在控制台打印日志
+print_log=1
+#输出目标，2为kafka
+output_target=2
+#是否聚集输出，一个标签点文件的断面数据做为一行输出
+aggregation=1
+#是否输出行头信息
+output_title=0
+#kafka的topic
+topic="test"
+#kafka的broker_list
+broker_list="192.168.152.129"
+#topic的分区号
+partition=1
+#每次发送给kafka数据包中的数据条数
+message_count=1000
+
+def my_job():
+    #while True:
+    current_time = datetime.now()
+    reset_minute = (current_time.minute // execution_cycle) * execution_cycle
+    #以执行周期为单位上取整
+    end_time = current_time.replace( minute=reset_minute, second=0, microsecond=0 )
+    start_time = end_time - timedelta(hours = 1)
+    print("current_time=", current_time.__str__(), " query start_time=", start_time.__str__() ," query end_time=", end_time.__str__())
+    args=exe_path+" --ip "+ip+" --start \""+start_time.__str__()+"\" --end \""+end_time.__str__()+"\" --interval "+str(time_interval)+" --thread_count "+str(thread_count)+" --points_dir \""+points_dir+"\" --source_from "+str(source_from)+" --interpolation_mode "+str(interpolation_mode)+" --log_level "+str(log_level)+" --print_log "+str(print_log)+" --output_target "+str(output_target)+" --aggregation "+str(aggregation)+" --output_title "+str(output_title)+" --topic "+topic+" --broker_list "+broker_list+" --partition "+str(partition)+" --message_count "+str(message_count)+" --after_cmd \"\""
+    print(args)
+    child = subprocess.Popen(args)
+    child.wait()
+    print("本次执行完毕")
+    print ('----------')
+
+scheduler = BlockingScheduler()
+print("当前时间：",datetime.now().__str__(),"，定时任务执行周期：", execution_cycle*60, "s")
+scheduler.add_job(my_job, 'interval', seconds=(execution_cycle*60))
+scheduler.start()
+
+''' 
+class MyTimer( object ):
+
+    def __init__( self, start_time, interval, callback_proc, args=None, kwargs=None ):
+
+        self.__timer = None
+        self.__start_time = start_time
+        self.__interval = interval
+        self.__callback_pro = callback_proc
+        self.__args = args if args is not None else []
+        self.__kwargs = kwargs if kwargs is not None else {}
+
+    def exec_callback( self, args=None, kwargs=None ):
+        self.__callback_pro( *self.__args, **self.__kwargs )
+        self.__timer = Timer( self.__interval, self.exec_callback )
+        self.__timer.start()
+
+    def start( self ):
+        interval = self.__interval - ( datetime.now().timestamp() - self.__start_time.timestamp() )
+        print("将在 ",interval,"s 后执行任务")
+        self.__timer = Timer( interval, self.exec_callback )
+        self.__timer.start()
+
+    def cancel( self ):
+        self.__timer.cancel() 
+        self.__timer = None
+
+class Ouoput:
+    def exe( self ):
+        current_time = datetime.now()
+        end_time = current_time.replace( second=0, microsecond=0 )
+        start_time = end_time - timedelta(hours = 1)
+        print("current_time=", current_time.__str__(), " query start_time=", start_time.__str__() ," query end_time=", end_time.__str__())
+        args=exe_path+" --ip "+ip+" --start \""+start_time.__str__()+"\" --end \""+end_time.__str__()+"\" --interval "+str(time_interval)+" --thread_count "+str(thread_count)+" --points_dir \""+points_dir+"\" --source_from "+str(source_from)+" --interpolation_mode "+str(interpolation_mode)+" --log_level "+str(log_level)+" --print_log "+str(print_log)+" --output_target "+str(output_target)+" --aggregation "+str(aggregation)+" --topic "+topic+" --broker_list "+broker_list
+        print(args)
+        child = subprocess.Popen(args)
+        child.wait()
+        print("本次执行完毕")
+        #returncode = p.poll()    
+        #while returncode is None:         #检查子程序是否结束
+        #    line = p.stdout.readline()    #若没有，则获取子程序的输出
+        #    returncode = p.poll()
+        #    line = line.strip()
+        #    print(line)
+        #print(returncode)
+
+if __name__ == "__main__":
+    output_app = Ouoput()
+    start = datetime.now()
+    #以执行周期为单位上取整
+    reset_minute = (start.minute // execution_cycle + 1) * execution_cycle
+    start = start.replace( minute=reset_minute, second=30, microsecond=0 )
+    tmr = MyTimer( start, execution_cycle*60, output_app.exe )
+    tmr.start()
+    tmr.cancel()
+ '''

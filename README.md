@@ -6,7 +6,7 @@ GoldenTool为庚顿跨平台工具包，具体工具包含：
 #入门
 1.	HistoryDataSync
 ```
-.\HistoryDataSyncW.exe -h
+.\HistoryDataSync.exe -h
 ,-_/,.       .                 .-,--.      .        .---.
 ' |_|/ . ,-. |- ,-. ,-. . .    ' |   \ ,-. |- ,-.   \___  . . ,-. ,-.
  /| |  | `-. |  | | |   | |    , |   / ,-| |  ,-|       \ | | | | |
@@ -15,7 +15,7 @@ GoldenTool为庚顿跨平台工具包，具体工具包含：
                         `-'                               `-'
 
 App description
-Usage: D:\Code\Linux\GoldenTool\HistoryDataSyncW\bin\x64\Release\HistoryDataSyncW.exe [OPTIONS]
+Usage: .\HistoryDataSync.exe [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit

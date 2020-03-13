@@ -1,10 +1,11 @@
 #简介
 HistoryDataSync，历史数据同步工具。
-带L的为linux版，带W的为windows版。
+
+.exe的为windows版，.out的为linux版。
 
 #入门
 ```
- .\HistoryDataSyncW.exe -h
+ .\HistoryDataSync.exe -h
 ,-_/,.       .                 .-,--.      .        .---.
 ' |_|/ . ,-. |- ,-. ,-. . .    ' |   \ ,-. |- ,-.   \___  . . ,-. ,-.
  /| |  | `-. |  | | |   | |    , |   / ,-| |  ,-|       \ | | | | |
@@ -13,7 +14,7 @@ HistoryDataSync，历史数据同步工具。
                         `-'                               `-'
 
 App description
-Usage: D:\Code\Linux\GoldenTool\HistoryDataSyncW\bin\x64\Release\HistoryDataSyncW.exe [OPTIONS]
+Usage: .\HistoryDataSync.exe [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -56,7 +57,7 @@ Options:
 ```
 
 ```
-./HistoryDataSyncL.out -h
+./HistoryDataSync.out -h
 ,-_/,.       .                 .-,--.      .        .---.             
 ' |_|/ . ,-. |- ,-. ,-. . .    ' |   \ ,-. |- ,-.   \___  . . ,-. ,-. 
  /| |  | `-. |  | | |   | |    , |   / ,-| |  ,-|       \ | | | | |   
@@ -65,7 +66,7 @@ Options:
                         `-'                               `-'         
 
 App description
-Usage: ./HistoryDataSyncL.out [OPTIONS]
+Usage: ./HistoryDataSync.out [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -112,11 +113,11 @@ Options:
 ```
 #!/bin/sh
 #
-./HistoryDataSyncL.out -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time '2016-9-4 8:9:3' --end_time '2019-12-4 8:9:3' --thread_count 1 --log_level 0 --print_log --points_dir '/home/golden/projects/GoldenTool/points'
+./HistoryDataSync.out -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time '2016-9-4 8:9:3' --end_time '2019-12-4 8:9:3' --thread_count 1 --log_level 0 --print_log --points_dir '/home/golden/projects/GoldenTool/points'
 ```
 在命令行直接传入参数：
 ```
-./HistoryDataSyncL.out -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time '2016-9-4 8:9:3' --end_time '2019-12-4 8:9:3' --thread_count 1 --log_level 0 --print_log --points_dir '/home/golden/projects/GoldenTool/points'
+./HistoryDataSync.out -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time '2016-9-4 8:9:3' --end_time '2019-12-4 8:9:3' --thread_count 1 --log_level 0 --print_log --points_dir '/home/golden/projects/GoldenTool/points'
 ```
 
 在bat脚本配置参数：
@@ -125,7 +126,7 @@ Options:
 @echo off
 cd /d %~dp0
 REM 不输出点表
-.\HistoryDataSyncW.exe -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time "2016-9-4 8:9:3" --end_time "2019-12-4 8:9:3" --thread_count 1 --log_level 0 --print_log --points_dir "D:\Code\GoldenHistoryDataToRTDB\Debug_v30\points"
+.\HistoryDataSync.exe -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time "2016-9-4 8:9:3" --end_time "2019-12-4 8:9:3" --thread_count 1 --log_level 0 --print_log --points_dir "D:\Code\GoldenHistoryDataToRTDB\Debug_v30\points"
 REM 输出点表
-REM .\HistoryDataSyncW.exe -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time "2016-9-4 8:9:3" --end_time "2019-12-4 8:9:3" --thread_count 1 --log_level 0 --print_log --points_dir "D:\Code\GoldenHistoryDataToRTDB\Debug_v30\points" --output_points_prop
+REM .\HistoryDataSync.exe -n task1 --source_host_name 192.168.152.134 --sink_host_name 192.168.152.137 --start_time "2016-9-4 8:9:3" --end_time "2019-12-4 8:9:3" --thread_count 1 --log_level 0 --print_log --points_dir "D:\Code\GoldenHistoryDataToRTDB\Debug_v30\points" --output_points_prop
 ```

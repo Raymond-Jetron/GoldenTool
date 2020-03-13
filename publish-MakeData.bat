@@ -63,7 +63,7 @@ REM 复制README
 echo copy README
 copy /y README\%app_name%\README.md %publish_path%\README.md
 echo .
-
+--
 REM =================================
 
 
