@@ -5,7 +5,7 @@ set os_type=win
 REM x86_64,arm
 set cpu=x86_64
 REM user define
-set version=1.0.4
+set version=1.0.6
 REM user define
 set publish_root=publish
 
@@ -42,10 +42,10 @@ echo copy %exe_name%
 md %publish_path%\%exe_name%\x64
 md %publish_path%\%exe_name%\x86
 xcopy /y /s /e bin\%exe_name%\x64_win\Release\%exe_name%.exe %publish_path%\%exe_name%\x64
-xcopy /y /s /e bin\%exe_name%\x64_win\Release\goldenapi64.dll %publish_path%\%exe_name%\x64
+xcopy /y /s /e bin\%exe_name%\x64_win\Release\rtdbapi64.dll %publish_path%\%exe_name%\x64
 xcopy /y /s /e depend\win %publish_path%\%exe_name%\x64
 xcopy /y /s /e bin\%exe_name%\x86_win\Release\%exe_name%.exe %publish_path%\%exe_name%\x86
-xcopy /y /s /e bin\%exe_name%\x86_win\Release\goldenapi.dll %publish_path%\%exe_name%\x86
+xcopy /y /s /e bin\%exe_name%\x86_win\Release\rtdbapi.dll %publish_path%\%exe_name%\x86
 xcopy /y /s /e depend\win %publish_path%\%exe_name%\x86
 echo .
 

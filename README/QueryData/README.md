@@ -44,9 +44,12 @@ Options:
                                3.plot_value
                                4.interval_value
                                5.summary_value
+                               6.section_summary_value
+                               7.snapshot_value
   --query_batch_count INT     query values count per batch (=1000)
   --interval INT              query interval (=1000)
   --thread_count INT          thread count (=1)
+  --thread1_count INT         thread1 count (=1) section_summary_value use
   --print_log                 print log to console
   --log_level INT             log level (=2) as info
                                0.trace
@@ -92,6 +95,7 @@ Options:
                               format:
                                "YYYY-MM-DD hh:mm:ss.ms"
                                "forever" end time is max UTC time
+  --search TEXT               search condition
   --first_point INT           first point's id (=1)
   --point_count INT           point count (=1)
   --point_interval INT        point interval (=1)
@@ -101,9 +105,12 @@ Options:
                                3.plot_value
                                4.interval_value
                                5.summary_value
+                               6.section_summary_value
+                               7.snapshot_value
   --query_batch_count INT     query values count per batch (=1000)
   --interval INT              query interval (=1000)
   --thread_count INT          thread count (=1)
+  --thread1_count INT         thread1 count (=1) section_summary_value use
   --print_log                 print log to console
   --log_level INT             log level (=2) as info
                                0.trace
@@ -124,17 +131,17 @@ Options:
 ```
 #!/bin/sh
 #后台执行命令
-nohup ./QueryData.out -n test-1 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 121 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-1 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 121 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./QueryData.out -n test-2 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 122 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-2 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 122 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./QueryData.out -n test-3 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 123 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-3 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 123 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./QueryData.out -n test-4 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 124 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-4 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 124 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./QueryData.out -n test-5 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 125 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
+nohup ./QueryData.out -n test-5 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 125 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1 &
 
-nohup ./QueryData.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 126 --point_count 1 --result_file '/home/golden/projects/GoldenPerf/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1
+nohup ./QueryData.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e '2019-09-18 0:59:59.999' --first_point 126 --point_count 1 --result_file '/home/PerfTest/result/log.csv' --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 5 >/dev/null 2>&1
 ```
 在命令行直接传入参数：
 ```

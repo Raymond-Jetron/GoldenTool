@@ -67,7 +67,7 @@ Options:
 ```
 
 ```
-./MakeDataL.out -h
+./MakeData.out -h
 ,-,-,-.       .         .-,--.      .      
 `,| | |   ,-. | , ,-.   ' |   \ ,-. |- ,-. 
   | ; | . ,-| |<  |-'   , |   / ,-| |  ,-| 
@@ -76,7 +76,7 @@ Options:
                                            
 
 App description
-Usage: ./GoldenMakeDataL.out [OPTIONS]
+Usage: ./MakeData.out [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -86,7 +86,7 @@ Options:
                                e.g. -a 192.168.0.2 192.168.0.3 192.168.0.4 192.168.0.5
   -p,--port INT               port number (=6327)
   -u,--user TEXT              user name (=sa)
-  -w,--password TEXT          pass word (=golden)
+  -w,--password TEXT          pass word (=admin)
   -s,--starttime TEXT         start time (=now)
                               format:
                                "YYYY-MM-DD hh:mm:ss"
