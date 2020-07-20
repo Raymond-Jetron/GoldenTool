@@ -708,35 +708,15 @@ golden_error get_interval_value_thread(int pos, int count)
 
 	auto& start_t_s = golden_config::start_time_int_;
 	auto& start_t_ms = golden_config::start_time_ms_;
-	unsigned long long start_t = (unsigned long long)start_t_s * 1000 + start_t_ms;
+	auto& interval_count = golden_config::interval_;
 	auto& end_t_s = golden_config::end_time_int_;
 	auto& end_t_ms = golden_config::end_time_ms_;
-	unsigned long long end_t = (unsigned long long)end_t_s * 1000 + end_t_ms;
-	auto& interval_t_ms = golden_config::interval_;
-	auto interval_t_s = interval_t_ms / 1000;
-	bool timestamp_is_second = (interval_t_ms % 1000 == 0) ? true : false;
 
-	int query_count = 1 + timestamp_is_second ? (int)floor(double(start_t_s - end_t_s)/ interval_t_s) : (int)floor((double)(end_t - start_t) / interval_t_ms);
-
-	vector<golden_int32> datetimes(query_count);
-	vector<golden_int16> ms(query_count);
-	vector<golden_float64> fvalues(query_count);
-	vector<golden_int64> ivalues(query_count);
-	vector<golden_int16> quality(query_count);
-
-	if (timestamp_is_second) {
-		std::generate(datetimes.begin(), datetimes.end(), [n = 0, &start_t_s, &interval_t_s]() mutable { 
-			return start_t_s + (interval_t_s * n++); });
-	}
-	else {
-		datetimes.at(0) = start_t_s;
-		ms.at(0) = start_t_ms;
-		for (int i = 0; i < query_count - 1; ++i) {
-			int&& forward_step_ms = (int)ms.at(i) + interval_t_ms;
-			datetimes[i + 1] = datetimes[i] + forward_step_ms / 1000;
-			ms[i + 1] = ms[i] + (short)(forward_step_ms % 1000);
-		}
-	}
+	vector<golden_int32> datetimes(interval_count);
+	vector<golden_int16> ms(interval_count);
+	vector<golden_float64> fvalues(interval_count);
+	vector<golden_int64> ivalues(interval_count);
+	vector<golden_int16> quality(interval_count);
 
 	stop_watch total_point_watch, one_point_watch, single_call_watch;
 	double elapsed_time = 0.0;
@@ -744,15 +724,18 @@ golden_error get_interval_value_thread(int pos, int count)
 
 	total_point_watch.restart();
 	std::for_each(g_ids.begin() + pos, g_ids.begin() + pos + count, [&](int id) {
+		datetimes[0] = start_t_s;    ms[0] = start_t_ms;
+		datetimes[interval_count - 1] = end_t_s;   ms[interval_count - 1] = end_t_ms;
+		int query_count = interval_count;
 		one_point_watch.restart();
-		ecode = goh_get_timed_values(nHanle, id, query_count, datetimes.data(), ms.data(), fvalues.data(), ivalues.data(), quality.data());
+		ecode = goh_get_interpo_values(nHanle, id, &query_count, datetimes.data(), ms.data(), fvalues.data(), ivalues.data(), quality.data());
 		one_point_watch.stop();
 		CHECK_ECODE(ecode, fmt::format("Get data, id={}", id).c_str(), g_logger);
 		//for (int i = 0; i < value_count; ++i) {
 		//	fmt::print("{}\tid={}, datetime={}, ms={}, fvalue={}, ivalue={}, quality={}", i + 1, id, datetimes[i], ms[i], fvalues[i], ivalues[i], quality[i]);
 		//}
 		g_logger->warn("Get data : id={}, interval={}, value_count={}, elapsed={:.2f}ms",
-			id, interval_t_ms, query_count, one_point_watch.elapsed_ms());
+			id, interval_count, query_count, one_point_watch.elapsed_ms());
 		all_point_total_count += (unsigned long long)query_count;
 	});
 	total_point_watch.stop();

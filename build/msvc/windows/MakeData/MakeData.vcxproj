@@ -109,7 +109,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)third\api\$(PlatformShortName)_win\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rtdbapi64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>goldenapi64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)third\api\$(PlatformShortName)_win\rtdbapi64.dll $(OutDir)</Command>
@@ -130,7 +130,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)third\api\$(PlatformShortName)_win\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rtdbapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>goldenapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)third\api\$(PlatformShortName)_win\rtdbapi.dll $(OutDir)</Command>
@@ -155,7 +155,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)third\api\$(PlatformShortName)_win\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rtdbapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>goldenapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)third\api\$(PlatformShortName)_win\rtdbapi.dll $(OutDir)</Command>
@@ -180,7 +180,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)third\api\$(PlatformShortName)_win\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>rtdbapi64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>goldenapi64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy $(SolutionDir)third\api\$(PlatformShortName)_win\rtdbapi64.dll $(OutDir)</Command>

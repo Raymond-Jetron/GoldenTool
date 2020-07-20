@@ -234,18 +234,18 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 			ecode = goh_get_archived_values(source_db_handle, source_id, &values_count_get, datetimes.data(), mses.data(), values.data(), states.data(), qualities.data());
 			CHECK_ECODE(ecode, _T("goh_get_archived_values"), g_logger);
 			if (values_count_get == 0) {
-				g_logger->info(_T("标签点[{},{}][{}-{}]实际获得0条历史数据，跳过同步"), source_id, point_name, cast_time_str_simple(datetimes[0]), cast_time_str_simple(datetimes[values_count_get - 1]));
+				g_logger->info(_T("Point [{},{}][{}-{}] left 0 datas, skip it."), source_id, point_name, cast_time_str_simple(batch_nStartTime), cast_time_str_simple(batch_nEndTime));
 				return GoE_OK;
 			}
 			else {
-				g_logger->trace(_T("标签点[{},{}][{}-{}]实际获得[{}]条历史数据，准备同步..."), source_id, point_name, cast_time_str_simple(datetimes[0]), cast_time_str_simple(datetimes[values_count_get - 1]), values_count_get);
+				g_logger->trace(_T("Point [{},{}][{}-{}] has [{}] datas, sync..."), source_id, point_name, cast_time_str_simple(datetimes[0]), cast_time_str_simple(datetimes[values_count_get - 1]), values_count_get);
 			}
 			// 更新开始时间
 			batch_nStartTime = datetimes[values_count_get - 1] + 1;
 			// 向sink写入历史值
 			golden_int32 values_count_put = values_count_get;
 			ecode = goh_put_archived_values(sink_db_handle, &values_count_put, put_ids.data(), datetimes.data(), mses.data(), values.data(), states.data(), qualities.data(), errors.data());
-			g_logger->info(_T("标签点[{},{}][{}-{}]实际同步[{}]条历史数据，同步完成"), source_id, point_name, cast_time_str_simple(datetimes[0]), cast_time_str_simple(datetimes[values_count_put - 1]), values_count_put);
+			g_logger->info(_T("Point [{},{}][{}-{}] syncs [{}] datas, sync completed."), source_id, point_name, cast_time_str_simple(datetimes[0]), cast_time_str_simple(datetimes[values_count_put - 1]), values_count_put);
 			CHECK_ECODE(ecode, _T("goh_put_archived_values"), g_logger);
 		
 			// 查看写入失败的数据
@@ -253,7 +253,7 @@ void hisdata_to_rtdb_thread(const std::string &point_file_path)
 				int error_data_count = 0;
 				for (int i = (int)errors.size() - 1; i >= 0; --i) {    // 错误一般在后面，从后往前遍历
 					if (errors[i] != GoE_OK) {
-						g_logger->error(_T("标签点[{},{}]第{}条数据同步失败"), source_id, point_name, i + 1);
+						g_logger->error(_T("Point [{},{}] No.{} in datas sync failed."), source_id, point_name, i + 1);
 						CHECK_ECODE(errors[i], _T("goh_put_archived_values"), g_logger);
 						if (++error_data_count == (values_count_get - values_count_put)) break;  // 如果检查出的错误数已够，提前跳出循环
 					}
@@ -382,6 +382,8 @@ void prepare_connections()
 		{
 			{
 				std::unique_lock<std::mutex> lock(login_mutex);
+				go_set_option(GOLDEN_API_AUTO_RECONN, 1);
+				go_set_option(GOLDEN_API_CONN_TIMEOUT, 0);
 				login_success = (GoE_OK == (ecode = go_connect(ip.c_str(), port, &nHandle)) && GoE_OK == (ecode = go_login(nHandle, user.c_str(), password.c_str(), &priv)));
 			}
 			if (!login_success)
@@ -772,9 +774,9 @@ int main(int argc, char* argv[])
 		golden_config::log_level_ = spdlog::level::level_enum::info;
 		app.add_option("--log_level", golden_config::log_level_, "log level (=2) as info\n 0.trace\n 1.debug\n 2.info\n 3.warn\n 4.err\n 5.critical\n 6.off");
 #ifdef _WIN32
-		app.add_flag("--Attention", "# 注意：\n#   1.可以传入带毫秒的时间范围\n#   2.如果同步多个标签点，会自动分配到多个线程");
+		app.add_flag("--Attention", "# 注意：\n#   1.可以传入带毫秒的时间范围\n#   2.如果同步多个标签点，会自动分配到多个线程\n#   3.同步过的标签点文件会重命名添加[OK]前缀");
 #elif _LINUX
-		app.add_flag("--Attention", "Attention:\n1.Time range with milliseconds can be passed in.\n2.If multiple points are sync, they are automatically assigned to multiple sync threads.");
+		app.add_flag("--Attention", "Attention:\n1.Time range with milliseconds can be passed in.\n2.If multiple points are sync, they are automatically assigned to multiple sync threads.\n3.The synchronized point files will be renamed and prefixed with [OK].");
 #endif
 
 		try {
