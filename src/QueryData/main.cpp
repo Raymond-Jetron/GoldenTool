@@ -40,7 +40,6 @@ namespace golden_config
 	int query_batch_count_;
 	int interval_;
 	int thread_count_;
-	int inter_thread_count_;
 	bool print_log_;
 	int log_level_;
 	std::string result_file_;
@@ -708,9 +707,9 @@ golden_error get_interval_value_thread(int pos, int count)
 
 	auto& start_t_s = golden_config::start_time_int_;
 	auto& start_t_ms = golden_config::start_time_ms_;
-	auto& interval_count = golden_config::interval_;
 	auto& end_t_s = golden_config::end_time_int_;
 	auto& end_t_ms = golden_config::end_time_ms_;
+	auto& interval_count = golden_config::interval_;
 
 	vector<golden_int32> datetimes(interval_count);
 	vector<golden_int16> ms(interval_count);
@@ -811,115 +810,89 @@ golden_error get_summary_value_thread(int pos, int count)
 	return GoE_OK;
 }
 
-golden_error get_group_by_interval_summary_value_thread(int pos, int count)
+golden_error get_summary_value_group_by_interval_thread(int pos, int count)
 {
+	golden_error ecode = GoE_OK;
+	int nHanle = 0;
+	{
+		// 从连接池获取连接句柄
+		std::unique_lock<std::mutex> lock(cq_mutex);
+		g_logger->trace("Get connection handle, current connection pool size : {}", connect_queue.size());
+		nHanle = connect_queue.front();
+		connect_queue.pop();
+	}
+	ON_SCOPE_EXIT([&] {
+		if (nHanle) {
+			std::unique_lock<std::mutex> lock(cq_mutex);
+			connect_queue.push(nHanle);
+			g_logger->trace("Return connection handle : {}, current connection pool size : {}", nHanle, connect_queue.size());
+		}
+	});
+
 	auto& start_t_s = golden_config::start_time_int_;
 	auto& start_t_ms = golden_config::start_time_ms_;
 	auto& end_t_s = golden_config::end_time_int_;
 	auto& end_t_ms = golden_config::end_time_ms_;
+	auto& interval_count = golden_config::interval_;
+	int timestamp_count = interval_count + 1;  // 时间戳个数比分组个数多1
+	// |--|--|--|--|--|--|--|--|--|--|
 
-	golden_int32 _start_t_s = start_t_s;
-	golden_int16 _start_t_ms = start_t_ms;
-	golden_int32 _end_t_s = end_t_s;
-	golden_int16 _end_t_ms = end_t_ms;
+	vector<golden_int32> datetimes(timestamp_count);
+	vector<golden_int16> ms(timestamp_count);
 
 	stop_watch total_point_watch, one_point_watch, single_call_watch;
 	double elapsed_time = 0.0;
 	unsigned long long all_point_total_count = 0;
 
-	auto get_summary_value = [&](int id, golden_int32 start_t_s, golden_int16 start_t_ms, golden_int32 end_t_s, golden_int16 end_t_ms)->golden_error
-	{
-		stop_watch one_point_watch;
-		int nHanle = 0;
-		{
-			// 从连接池获取连接句柄
-			std::unique_lock<std::mutex> lock(cq_mutex);
-			g_logger->trace("Get connection handle, current connection pool size : {}", connect_queue.size());
-			nHanle = connect_queue.front();
-			connect_queue.pop();
-		}
-		ON_SCOPE_EXIT([&] {
-			if (nHanle) {
-				std::unique_lock<std::mutex> lock(cq_mutex);
-				connect_queue.push(nHanle);
-				g_logger->trace("Return connection handle : {}, current connection pool size : {}", nHanle, connect_queue.size());
-			}
-		});
+	// 对时间段分组
+	double step_len = (double)(GOLDEN_MS_DELAY_BETWEEN(end_t_s, end_t_ms, start_t_s, start_t_ms) / interval_count);
+	for (int i = 0; i < timestamp_count; ++i) {
+		GOLDEN_MS_ADD_TIME(start_t_s, start_t_ms, static_cast<unsigned long long>(step_len * i), datetimes[i], ms[i])
+		g_logger->trace("{}, datetimes={}, ms={}, datetime_str={}", i, datetimes[i], ms[i], cast_time_ms_str(datetimes[i], ms[i]));
+	}
+	
+	// 查询单个标签点的分段统计值
+	auto get_summary_value_group_by_interval = [&](int id)->golden_error {
 		golden_float64 max_value = 0.;
 		golden_float64 min_value = 0.;
 		golden_float64 total_value = 0.;
 		golden_float64 calc_avg = 0.;
 		golden_float64 power_avg = 0.;
-		golden_int32 _start_t_s = start_t_s;
-		golden_int16 _start_t_ms = start_t_ms;
-		golden_int32 _end_t_s = end_t_s;
-		golden_int16 _end_t_ms = end_t_ms;
-		golden_error ecode = GoE_OK;
-		int remaining_time = (_end_t_s - _start_t_s + 1) % golden_config::interval_;
-		int time_count_per_thread = (_end_t_s - _start_t_s + 1) / golden_config::interval_ + (0 != remaining_time ? 1 : 0);
-		for (int i = 0; i < time_count_per_thread; ++i) {
+
+		golden_int32 group_start_t_s;
+		golden_int16 group_start_t_ms;
+		golden_int32 group_end_t_s;
+		golden_int16 group_end_t_ms;
+
+		for (int i = 0; i < interval_count; ++i) {
 			max_value = 0.;
 			min_value = 0.;
 			total_value = 0.;
 			calc_avg = 0.;
-			power_avg = 0.;
-			_start_t_s = start_t_s + i * golden_config::interval_;
-			_start_t_ms = 0;
-			if (remaining_time && (time_count_per_thread - 1 == i))
-			{
-				_end_t_s = end_t_s;
-			}
-			else
-			{
-				_end_t_s = start_t_s + (i + 1) * golden_config::interval_ - 1;
-			}
-			one_point_watch.restart();
-			ecode = goh_summary(nHanle, id, &_start_t_s, &_start_t_ms, &_end_t_s, &_end_t_ms, &max_value, &min_value, &total_value, &calc_avg, &power_avg);
-			one_point_watch.stop();
-			CHECK_ECODE(ecode, fmt::format("Get data, id={}", id).c_str(), g_logger);
-			char start_buf[32] = { 0 };
-			time_t start_t = _start_t_s;
-			auto start_local = localtime(&start_t); //转为本地时间
-			strftime(start_buf, 64, "%Y-%m-%d %H:%M:%S", start_local);
-			char end_buf[32] = { 0 };
-			time_t end_t = _end_t_s;
-			auto end_local = localtime(&end_t); //转为本地时间
-			strftime(end_buf, 64, "%Y-%m-%d %H:%M:%S", end_local);
-			g_logger->warn("_start_t_s = {}, _end_t_s = {}, time_span = {}", start_buf, end_buf, _end_t_s - _start_t_s);
-			//if (_end_t_s - _start_t_s != 3599)
-			//	DebugBreak();
-			g_logger->warn("Get data : id={}, max_value={:.2f}, min_value={:.2f}, total_value={:.2f}, calc_avg={:.2f}, power_avg={:.2f}, elapsed={:.2f}ms",
-				id, max_value, min_value, total_value, calc_avg, power_avg, one_point_watch.elapsed_ms());
-			all_point_total_count += 5ULL;
+			power_avg = 0.;			
+			
+			group_start_t_s = datetimes[i];
+			group_start_t_ms = ms[i];
+			group_end_t_s = datetimes[i + 1];
+			group_end_t_ms = ms[i + 1];
+
+			single_call_watch.restart();
+			ecode = goh_summary(nHanle, id, &group_start_t_s, &group_start_t_ms, &group_end_t_s, &group_end_t_ms, &max_value, &min_value, &total_value, &calc_avg, &power_avg);
+			single_call_watch.stop();
+			if (ecode != GoE_OK && ecode != GoE_NO_DATA_FOR_SUMMARY)
+				check_ecode(ecode, fmt::format("Get data, id={}", id).c_str(), g_logger);
+			g_logger->trace("Get data : id={}, start_time={}, end_time={}, max_value={:.2f}, min_value={:.2f}, total_value={:.2f}, calc_avg={:.2f}, power_avg={:.2f}, elapsed={:.2f}ms", id, cast_time_ms_str(datetimes[i], ms[i]), cast_time_ms_str(datetimes[i + 1], ms[i + 1]), max_value, min_value, total_value, calc_avg, power_avg, single_call_watch.elapsed_ms());
 		}
-		return GoE_OK;
+		all_point_total_count += 5ULL * interval_count;
+		return ecode;
 	};
-	g_thread_pool1.init(golden_config::inter_thread_count_);
+
 	total_point_watch.restart();
 	std::for_each(g_ids.begin() + pos, g_ids.begin() + pos + count, [&](int id) {
 		one_point_watch.restart();
-		vector<std::future<golden_error> >results;
-		int remaining_time = (_end_t_s - _start_t_s + 1) % golden_config::inter_thread_count_;
-		int time_count_per_thread = (_end_t_s - _start_t_s + 1) / golden_config::inter_thread_count_;
-		for (int i = 0; i < golden_config::inter_thread_count_; ++i) {
-			_start_t_s = start_t_s + i * time_count_per_thread;
-			_start_t_ms = 0;
-			_end_t_ms = 0;
-			if (remaining_time && (golden_config::inter_thread_count_ - 1 == i))
-			{
-				_end_t_s = end_t_s;
-			}
-			else
-			{
-				_end_t_s = start_t_s + (i + 1) * time_count_per_thread - 1;
-			}
-			results.emplace_back(g_thread_pool1.enqueue(get_summary_value, id, _start_t_s, _start_t_ms, _end_t_s, _end_t_ms));	
-		}
-		for (auto&& result : results) {
-			result.get();
-			if (!g_running) break;
-		}
-		
+		ecode = get_summary_value_group_by_interval(id);
+		one_point_watch.stop();
+		g_logger->warn("Get data : id={}, elapsed={:.2f}ms", id, one_point_watch.elapsed_ms());
 	});
 	total_point_watch.stop();
 	elapsed_time = total_point_watch.elapsed_ms();
@@ -927,7 +900,6 @@ golden_error get_group_by_interval_summary_value_thread(int pos, int count)
 		g_ids.at(pos), count, all_point_total_count, elapsed_time);
 	all_thread_all_call_total_elapsed += elapsed_time;
 	g_query_total_count += all_point_total_count;
-	g_thread_pool1.close();
 
 	return GoE_OK;
 }
@@ -1086,9 +1058,9 @@ bool query_data()
 				results.emplace_back(g_thread_pool.enqueue(get_summary_value_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
 			}
 		}
-		else if (0 == golden_config::query_mode_.compare("group_by_interval_summary_value")) {
+		else if (0 == golden_config::query_mode_.compare("summary_value_group_by_interval")) {
 			for (int i = 0; i < golden_config::thread_count_; ++i) {
-				results.emplace_back(g_thread_pool.enqueue(get_group_by_interval_summary_value_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
+				results.emplace_back(g_thread_pool.enqueue(get_summary_value_group_by_interval_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
 			}
 		}
 		else {
@@ -1180,8 +1152,6 @@ int main(int argc, char *argv[])
 		app.add_option("--interval", golden_config::interval_, "query interval (=1000)");
 		golden_config::thread_count_ = 1;
 		app.add_option("--thread_count", golden_config::thread_count_, "thread count (=1)");
-		golden_config::inter_thread_count_ = 1;
-		app.add_option("--inter_thread_count", golden_config::inter_thread_count_, "inter thread count (=1)\n create thread pool inside function\n query_mode = group_by_interval_summary_value use");
 		golden_config::print_log_ = true;
 		app.add_flag("--print_log", golden_config::print_log_, "print log to console");
 		golden_config::log_level_ = spdlog::level::level_enum::info;
