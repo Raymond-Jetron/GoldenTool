@@ -64,19 +64,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/GoldenTool</RemoteRootDir>
+    <RemoteRootDir>/home/code/projects/RTDBTool</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/GoldenTool</RemoteRootDir>
+    <RemoteRootDir>/home/code/projects/RTDBTool</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/GoldenTool</RemoteRootDir>
+    <RemoteRootDir>/home/test/code/projects/RTDBTool</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
-    <RemoteRootDir>/home/golden/projects/GoldenTool</RemoteRootDir>
+    <RemoteRootDir>/home/test/code/projects/RTDBTool</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -107,8 +107,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
@@ -116,8 +116,8 @@
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
@@ -125,44 +125,46 @@
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
+    <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
+    <RemoteProjectDir>$(RemoteRootDir)/build/msvc/linux/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
+    <RemoteProjectDir>$(RemoteRootDir)/build/msvc/linux/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
@@ -170,8 +172,8 @@
     <ProjectPublicIncludePath>$(RemoteRootDir)/common/;$(RemoteRootDir)/third/;$(ProjectPublicIncludePath)</ProjectPublicIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(RemoteRootDir)/bin/$(ProjectName)/$(Platform)/$(Configuration)/</OutDir>
+    <IntDir>$(RemoteRootDir)/obj/$(ProjectName)/$(Platform)/$(Configuration)/</IntDir>
     <RemoteProjectDir>$(RemoteRootDir)/src/$(ProjectName)/</RemoteProjectDir>
     <IncludePath>$(SolutionDir)third\api\$(Platform)\;$(SolutionDir)third\;$(SolutionDir)common\;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)third\api\$(Platform)\;$(LibraryPath)</LibraryPath>
@@ -220,7 +222,7 @@
       <AdditionalOptions>-Wl,-rpath=$(RemoteOutDir) %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreLinkEvent>
-      <AdditionalSourcesToCopyMapping>$(SolutionDir)third\api\$(Platform)\libgoldenapi.so.3.0.28:=$(RemoteOutDir)libgoldenapi.so.3.0.28;$(SolutionDir)third\api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(SolutionDir)third\api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(SolutionDir)third\api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(SolutionDir)third\api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1;%(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
+      <AdditionalSourcesToCopyMapping>$(SolutionDir)third\api\$(Platform)\libgoldenapi.so.3.0.30:=$(RemoteOutDir)libgoldenapi.so.3.0.30;$(SolutionDir)third\api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(SolutionDir)third\api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(SolutionDir)third\api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(SolutionDir)third\api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1;%(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -234,7 +236,7 @@
       <AdditionalOptions>-Wl,-rpath=$(RemoteOutDir) %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreLinkEvent>
-      <AdditionalSourcesToCopyMapping>$(SolutionDir)third\api\$(Platform)\libgoldenapi.so.3.0.28:=$(RemoteOutDir)libgoldenapi.so.3.0.28;$(SolutionDir)third\api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(SolutionDir)third\api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(SolutionDir)third\api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(SolutionDir)third\api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1;%(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
+      <AdditionalSourcesToCopyMapping>$(SolutionDir)third\api\$(Platform)\libgoldenapi.so.3.0.30:=$(RemoteOutDir)libgoldenapi.so.3.0.30;$(SolutionDir)third\api\$(Platform)\libgoldenapi.so:=$(RemoteOutDir)libgoldenapi.so;$(SolutionDir)third\api\$(Platform)\libACE.so.6.0.0:=$(RemoteOutDir)libACE.so.6.0.0;$(SolutionDir)third\api\$(Platform)\liblz4.so.1:=$(RemoteOutDir)liblz4.so.1;$(SolutionDir)third\api\$(Platform)\libsnappy.so.1:=$(RemoteOutDir)libsnappy.so.1;%(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

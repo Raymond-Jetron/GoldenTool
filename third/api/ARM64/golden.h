@@ -270,7 +270,7 @@ enum GOLDEN_CONST
   GOLDEN_USERREAL_SIZE = 2,                             //!< 采集标签点用户自定义浮点数个数。
   GOLDEN_EQUATION_SIZE = 2036,                          //!< 计算标签点方程式占用字节数。
   GOLDEN_TYPE_NAME_SIZE = 21,                           //!< 自定义类型名称占用字节数。
-  GOLDEN_PACK_OF_SNAPSHOT = 4,                          //!< 事件快照备用字节空间。
+  GOLDEN_PACK_OF_SNAPSHOT = 0,                          //!< 事件快照备用字节空间。
   GOLDEN_PACK_OF_POINT = 5,                             //!< 标签点备用字节空间。
   GOLDEN_PACK_OF_BASE_POINT = 74,                       //!< 基本标签点备用字节空间。
   GOLDEN_PACK_OF_SCAN = 164,                            //!< 采集标签点备用字节空间。
@@ -1253,6 +1253,7 @@ enum GOLDEN_DB_PARAM_INDEX
 	GOLDEN_PARAM_POOL_DATA_FILE_DIR,				      // 曲线池缓存文件目录，字符串最大长度为 GOLDEN_MAX_PATH
 	GOLDEN_PARAM_ARCHIVE_FILE_PATH,				      // 自动管理的存档文件目录，字符串最大长度为 GOLDEN_MAX_PATH
 	GOLDEN_PARAM_LIC_VERSION_TYPE,                      // 授权版本
+    GOLDEN_PARAM_AUTO_MOVE_PATH,                        // 自动移动目的地全路径，必须以“\”或“/”结束，字符串最大长度为 GOLDEN_MAX_PATH
 	GOLDEN_PARAM_STR_LAST,
 
 	// int parameter.
@@ -1370,6 +1371,8 @@ enum GOLDEN_DB_PARAM_INDEX
 	GOLDEN_PARAM_MIRROR_COMPRESS_MIN,					  // 镜像报文压缩最小值
 	GOLDEN_PARAM_ARCHIVE_ROLL_TIME,					  // 存档文件滚动时间轴
 	GOLDEN_PARAM_HANDLE_TIME_OUT,						// 连接超时断开，单位：秒
+    GOLDEN_PARAM_MOVE_ARV_TIME,					  // 移动存档文件时决定移动存档的时间轴
+	GOLDEN_PARAM_USE_NEW_INTERP_ALGO,					// 启用新的插值算法  
 	GOLDEN_PARAM_INT_LAST,
 
 	//exp int param

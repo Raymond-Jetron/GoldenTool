@@ -197,6 +197,5 @@ Options:
 #生成与测试
 
 1. Windows平台可用VS2017打开RTDBToolW.sln，或者用QT5.9打开RTDBTool.pro
-
 2. Linux平台可用VS2017打开RTDBToolL.sln，或者用QT5.9打开RTDBTool.pro
-
+3. 在Linux平台测试时，需要将程序所在路径加到LD_LIBRARY_PATH里面，这样程序运行时可以搜索到动态库
