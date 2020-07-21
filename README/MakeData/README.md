@@ -1,8 +1,8 @@
-#简介
+# 简介
 MakeData，数据生成工具。
 .exe的为windows版，.out的为linux版。
 
-#入门
+# 入门
 ```
 .\MakeData.exe -h
 ,-,-,-.       .         .-,--.      .
@@ -139,7 +139,7 @@ Options:
                                You can view it using the top command.
 ```
 
-#测试
+# 测试
 在shell脚本配置参数：
 ```
 #!/bin/sh

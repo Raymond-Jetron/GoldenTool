@@ -1,9 +1,9 @@
-#简介
+# 简介
 HistoryDataSync，历史数据同步工具。
 
 .exe的为windows版，.out的为linux版。
 
-#入门
+# 入门
 ```
  .\HistoryDataSync.exe -h
 ,-_/,.       .                 .-,--.      .        .---.
@@ -108,7 +108,7 @@ Options:
                               2.If multiple points are sync, they are automatically assigned to multiple sync threads.
 ```
 
-#测试
+# 测试
 在shell脚本配置参数：
 ```
 #!/bin/sh

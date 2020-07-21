@@ -1,11 +1,11 @@
-#简介
+# 简介
 GoldenTool为庚顿跨平台工具包，具体工具包含：
 
 1. HistoryDataSync历史数据同步，适用于V3.0系列之间的同步，没有点数限制，没有授权限制。
 2. MakeData数据生成工具，向数据库写入实时/历史数据，支持各种波形。
 3. QueryData数据查询工具，从数据库查询数据，查快照、查历史存储值、查历史插值、查统计值、查趋势值。
 
-#入门
+# 入门
 1.	HistoryDataSync
 ```
 .\HistoryDataSync.exe -h
@@ -194,7 +194,7 @@ Options:
 
 > 详细内容见：/README/QueryData/README.md
 
-#生成与测试
+# 生成与测试
 
 1. Windows平台可用VS2017打开RTDBToolW.sln，或者用QT5.9打开RTDBTool.pro
 2. Linux平台可用VS2017打开RTDBToolL.sln，或者用QT5.9打开RTDBTool.pro

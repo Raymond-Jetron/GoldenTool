@@ -1,8 +1,8 @@
-#简介
+# 简介
 QueryData，数据查询工具。
 .exe的为windows版，.out的为linux版。
 
-#入门
+# 入门
 ```
  .\QueryData.exe -h
 ,,--.                    .-,--.      .
@@ -126,7 +126,7 @@ Options:
                               2.If multiple points are queried, they are automatically assigned to multiple query threads.
 ```
 
-#测试
+# 测试
 在shell脚本配置参数：
 ```
 #!/bin/sh

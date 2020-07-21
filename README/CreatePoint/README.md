@@ -1,8 +1,8 @@
-#简介
+# 简介
 CreatePoint，批量建点工具。
 .exe的为windows版，.out的为linux版。
 
-#入门
+# 入门
 ```
 .\CreatePoint.exe -h
  ,--.             .       .-,--.           .
