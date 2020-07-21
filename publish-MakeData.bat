@@ -1,11 +1,15 @@
 @echo off
 set app_name=MakeData
+
 REM win,el6,el7,ubuntu16
-set os_type=win
+set os_type=%1%
+
 REM x86_64,arm
-set cpu=x86_64
-REM user define
-set version=1.0.8
+set cpu=%2%
+
+REM Major.Minor.Patch
+set version=%3%
+
 REM user define
 set publish_root=publish
 
@@ -23,7 +27,7 @@ set test_file_extension=sh
 )
 
 REM 清空发布目录
-set publish_path=%publish_root%\%app_name%-%version%-%os_type%-%cpu%
+set publish_path=%publish_root%\%app_name%-%version%-%os_type%.%cpu%
 echo %publish_path%
 echo clear publish path
 rd /s /q %publish_path%
@@ -83,5 +87,3 @@ echo .
 REM =================================
 
 echo Complete!
-
-pause
