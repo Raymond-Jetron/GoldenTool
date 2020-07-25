@@ -44,12 +44,12 @@ Options:
                                3.plot_value
                                4.interval_value
                                5.summary_value
-                               6.section_summary_value
-                               7.snapshot_value
+                               6.group_by_interval_summary_value
+                               7.scan_snapshot_value
+                               8.subscribe_snapshot_value
   --query_batch_count INT     query values count per batch (=1000)
   --interval INT              query interval (=1000)
   --thread_count INT          thread count (=1)
-  --thread1_count INT         thread1 count (=1) section_summary_value use
   --print_log                 print log to console
   --log_level INT             log level (=2) as info
                                0.trace
@@ -105,8 +105,9 @@ Options:
                                3.plot_value
                                4.interval_value
                                5.summary_value
-                               6.section_summary_value
-                               7.snapshot_value
+                               6.group_by_interval_summary_value
+                               7.scan_snapshot_value
+                               8.subscribe_snapshot_value
   --query_batch_count INT     query values count per batch (=1000)
   --interval INT              query interval (=1000)
   --thread_count INT          thread count (=1)
@@ -145,5 +146,9 @@ nohup ./QueryData.out -n test-6 -a 192.168.152.130 -s '2019-09-18 0:0:0.000' -e 
 ```
 在命令行直接传入参数：
 ```
+查询历史存储值：
 ./QueryData.out -n test -a 192.168.152.132 -s '2019-09-18 0:0:0.000' -e '2019-09-18 1:59:59.999' --first_point 121 --point_count 2 --query_mode history_archived_ex --query_batch_count 18000 --thread_count 1 --log_level 0
+
+订阅快照值：
+.\QueryData.exe -n test -u sa -w golden -a 192.168.152.176 -s "2019-01-1 0:0:0" -e "2020-12-31 23:59:59" --first_point 33663 --point_count 884 --query_mode subscribe_snapshot_value --thread_count 2 --log_level 0
 ```

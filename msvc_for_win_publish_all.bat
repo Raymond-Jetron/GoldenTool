@@ -10,7 +10,7 @@ set cpu=x86_64
 echo cpu = %cpu%
 
 REM Major.Minor.Patch
-set version=1.0.8
+set version=1.0.9
 echo version = %version%
 
 echo ==============================

@@ -599,27 +599,128 @@ golden_error get_snapshot_value_thread(int pos, int count)
 		}
 	});
 
-	vector<golden_int32> ids(count);
 	vector<golden_int32> datetimes(count);
 	vector<golden_int16> ms(count);
 	vector<golden_float64> fvalues(count);
 	vector<golden_int64> ivalues(count);
 	vector<golden_int16> quality(count);
 	vector<golden_error> errors(count);
+	int point_count = count;
 
 	stop_watch total_point_watch;
 	double elapsed_time = 0.0;
-	for (int index = pos; index < pos + count; ++index) {
-		int id = g_ids.at(index);
-	}
 	total_point_watch.restart();
-	ecode = gos_get_snapshots(nHanle, &count, ids.data(), datetimes.data(), ms.data(), fvalues.data(), ivalues.data(), quality.data(), errors.data());
+	ecode = gos_get_snapshots(nHanle, &point_count, g_ids.data() + pos, datetimes.data(), ms.data(), fvalues.data(), ivalues.data(), quality.data(), errors.data());
 	total_point_watch.stop();
 	elapsed_time = total_point_watch.elapsed_ms();
 	g_logger->warn("Get datas : first_id={}, id_count={}, elapsed={}ms",
 		g_ids.at(pos), count, elapsed_time);
 	all_thread_all_call_total_elapsed += elapsed_time;
 	g_query_total_count += count;
+
+	return GoE_OK;
+}
+
+golden_error subscribe_snapshot_value_thread(int pos, int count)
+{
+	golden_error ecode = GoE_OK;
+	int nHanle = 0;
+	{
+		// 从连接池获取连接句柄
+		std::unique_lock<std::mutex> lock(cq_mutex);
+		g_logger->trace("Get connection handle, current connection pool size : {}", connect_queue.size());
+		nHanle = connect_queue.front();
+		connect_queue.pop();
+	}
+	ON_SCOPE_EXIT([&] {
+		if (nHanle) {
+			std::unique_lock<std::mutex> lock(cq_mutex);
+			connect_queue.push(nHanle);
+			g_logger->trace("Return connection handle : {}, current connection pool size : {}", nHanle, connect_queue.size());
+		}
+	});
+
+	auto start_t_s = golden_config::start_time_int_;
+	auto start_t_ms = golden_config::start_time_ms_;
+	auto end_t_s = golden_config::end_time_int_;
+	auto end_t_ms = golden_config::end_time_ms_;
+	bool is_finished = false;
+	int point_count = count;
+	vector<golden_error> errors(count);
+
+	typedef struct SubSnapshotParam
+	{
+		std::string _name;
+		golden_int32 _end_t_s;
+		golden_int16 _end_t_ms;
+		bool* _is_finished;
+		std::shared_ptr<spd::logger> _logger;
+		stop_watch _total_point_watch;
+	}SubSnapshotParam;
+
+	SubSnapshotParam _param;
+	_param._name = fmt::format("[{}]-[{}]", g_ids[pos], g_ids[pos + count - 1]);
+	_param._end_t_s = golden_config::end_time_int_;
+	_param._end_t_ms = golden_config::end_time_ms_;
+	_param._is_finished = &is_finished;
+	_param._logger = g_logger;
+
+	auto snaps_event_callback = [](
+		golden_uint32 event_type,
+		golden_int32 handle,
+		void* param,
+		golden_int32 count,
+		const golden_int32 *ids,
+		const golden_int32 *datetimes,
+		const golden_int16 *ms,
+		const golden_float64 *values,
+		const golden_int64 *states,
+		const golden_int16 *qualities,
+		const golden_error *errors)->golden_error {
+
+		SubSnapshotParam* p = (SubSnapshotParam*)param;
+		p->_total_point_watch.stop();
+		double elapsed_time = p->_total_point_watch.elapsed_ms();
+		switch (event_type)
+		{
+		case GOLDEN_EVENT_TYPE::GOLDEN_E_DATA:
+		{
+			g_query_total_count += count;
+			//for (int i = 0; i < count; ++i) {
+			//	fmt::print("{}\tid={}, datetime={}, ms={}, fvalue={}, ivalue={}, quality={}\n", i + 1, ids[i], datetimes[i], ms[i], values[i], states[i], qualities[i]);
+			//}
+			p->_logger->warn("Subscribe Task [ID:{}], there are {} snapshot values updated this time, time span from last time is {}ms", p->_name, count, elapsed_time);
+			all_thread_all_call_total_elapsed += elapsed_time;
+			break;
+		}
+		case GOLDEN_EVENT_TYPE::GOLDEN_E_DISCONNECT:
+		{
+			p->_logger->warn("Subscribe Task [ID:{}], disconnected with database.", p->_name);
+			break;
+		}
+		case GOLDEN_EVENT_TYPE::GOLDEN_E_RECOVERY:
+		{
+			p->_logger->warn("Subscribe Task [ID:{}], reconnected with database.", p->_name);
+			break;
+		}
+		default:
+			break;
+		}
+		if (GOLDEN_TIME_EQUAL_OR_GREATER_THAN(datetimes[0], ms[0], p->_end_t_s, p->_end_t_ms))
+			*(p->_is_finished) = true;
+		p->_total_point_watch.restart();
+
+		return GoE_OK;
+	};
+
+	ecode = gos_subscribe_snapshots_ex(nHanle, &point_count, g_ids.data() + pos, GOLDEN_OPTION::GOLDEN_O_AUTOCONN, &_param, snaps_event_callback, errors.data());
+	g_logger->info("Start subscribe task [ID:{}]", _param._name);
+
+	while (!is_finished) {
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	gos_cancel_subscribe_snapshots(nHanle);
+	g_logger->info("Cancle subscribe task [ID:{}]", _param._name);
 
 	return GoE_OK;
 }
@@ -1063,10 +1164,19 @@ bool query_data()
 				results.emplace_back(g_thread_pool.enqueue(get_summary_value_group_by_interval_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
 			}
 		}
-		else {
+		else  if (0 == golden_config::query_mode_.compare("scan_snapshot_value")) {
 			for (int i = 0; i < golden_config::thread_count_; ++i) {
 				results.emplace_back(g_thread_pool.enqueue(get_snapshot_value_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
 			}
+		}
+		else  if (0 == golden_config::query_mode_.compare("subscribe_snapshot_value")) {
+			for (int i = 0; i < golden_config::thread_count_; ++i) {
+				results.emplace_back(g_thread_pool.enqueue(subscribe_snapshot_value_thread, i * point_count_per_thread, ((remaining_count && (golden_config::thread_count_ - 1 == i)) ? remaining_count : point_count_per_thread)));
+			}
+		}
+		else {
+			g_logger->critical("No support query mode! query_mode={}", golden_config::query_mode_);
+			return false;
 		}
 
 		for (auto&& result : results) {
@@ -1145,7 +1255,7 @@ int main(int argc, char *argv[])
 		golden_config::point_interval_ = 1;
 		app.add_option("--point_interval", golden_config::point_interval_, "point interval (=1)");
 		golden_config::query_mode_ = "history_archived";
-		app.add_option("--query_mode", golden_config::query_mode_, "query mode (=history_archived)\n 1.history_archived\n 2.history_archived_ex\n 3.plot_value\n 4.interval_value\n 5.summary_value\n 6.group_by_interval_summary_value\n 7.snapshot_value");
+		app.add_option("--query_mode", golden_config::query_mode_, "query mode (=history_archived)\n 1.history_archived\n 2.history_archived_ex\n 3.plot_value\n 4.interval_value\n 5.summary_value\n 6.group_by_interval_summary_value\n 7.scan_snapshot_value\n 8.subscribe_snapshot_value");
 		golden_config::query_batch_count_ = 1000;
 		app.add_option("--query_batch_count", golden_config::query_batch_count_, "query values count per batch (=1000)");
 		golden_config::interval_ = 1000;
