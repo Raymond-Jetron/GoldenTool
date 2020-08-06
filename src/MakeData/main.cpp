@@ -140,6 +140,9 @@ void prepare_connections()
 {
 	golden_error ecode = GoE_OK;
 	
+	go_set_option(GOLDEN_API_AUTO_RECONN, 1);
+	go_set_option(GOLDEN_API_CONN_TIMEOUT, 0);
+
 	auto func_connect = [&](const char* host_name)->golden_int32
 	{
 		bool login_success = false;

@@ -374,6 +374,9 @@ void prepare_connections()
 	std::string sink_password = golden_config::sink_password_;
 	golden_int32 threadcount = golden_config::thread_count_;
 
+	go_set_option(GOLDEN_API_AUTO_RECONN, 1);
+	go_set_option(GOLDEN_API_CONN_TIMEOUT, 0);
+
 	auto func_connect = [&](std::string ip, int port, std::string user, std::string password)->golden_int32
 	{
 		bool login_success = false;
@@ -382,8 +385,6 @@ void prepare_connections()
 		{
 			{
 				std::unique_lock<std::mutex> lock(login_mutex);
-				go_set_option(GOLDEN_API_AUTO_RECONN, 1);
-				go_set_option(GOLDEN_API_CONN_TIMEOUT, 0);
 				login_success = (GoE_OK == (ecode = go_connect(ip.c_str(), port, &nHandle)) && GoE_OK == (ecode = go_login(nHandle, user.c_str(), password.c_str(), &priv)));
 			}
 			if (!login_success)
